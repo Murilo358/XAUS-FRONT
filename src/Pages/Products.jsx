@@ -1,29 +1,45 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react";
 import AuthContext from "../Contexts/AuthContext";
+import { hasPermission } from "../Permissions/Permissions";
+import { actions } from "../Permissions/Constants";
 
 const Products = () => {
-    const {jwtToken} = useContext(AuthContext);
+  const { jwtToken, roles } = useContext(AuthContext);
 
-  
-    const [products, setProducts] = useState([]);
+  const permission = hasPermission(roles, actions.VIEW_PRODUCTS);
 
-    useEffect(() =>{
+  const [products, setProducts] = useState([]);
 
-        const getAllProducts = async ()=>{
-            console.log(`Bearer ${jwtToken}`)
-            const productss = await fetch("http://localhost:8080/products/getAll", {
-                method: "GET",
-                headers: {'Authorization': `Bearer ${jwtToken}`}
-              })
-              console.log(await productss.json());
-        }
+  useEffect(() => {
+    const getAllProducts = async () => {
+      await fetch("http://localhost:8080/products/getAll", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      }).then(async (res) => {
+        setProducts(await res.json());
+      });
+    };
 
-        getAllProducts()
-    },[])
+    getAllProducts();
+  }, []);
 
-    return (
-    <div>Products</div>
-  )
-}
+  return (
+    <div>
+      Products
+      {permission ? (
+        products.length > 0 &&
+        products.map((product) => (
+          <div key={product.id}>
+            {product.name}
+            Quantidade disponivel {product.quantity}
+            Valor {product.price}
+          </div>
+        ))
+      ) : (
+        <p>Você não tem permissão :( </p>
+      )}
+    </div>
+  );
+};
 
-export default Products
+export default Products;

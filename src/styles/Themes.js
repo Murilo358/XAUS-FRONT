@@ -1,17 +1,9 @@
-/** @type {import('tailwindcss').Config} */
-import { useTheme } from "@emotion/react";
-import { tokens } from "./src/styles/Themes";
-import useThemeContext from "./src/Hooks/useThemeContext";
+import { createContext, useState, useMemo } from "react";
+import { createTheme } from "@mui/material/styles";
 
-export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-  theme: {
-    extend: {},
-    variants: {
-      extend: {},
-    },
-    colors: {
-      dark: {
+export const tokens = (mode) => ({
+  ...(mode === "dark"
+    ? {
         grey: {
           100: "#e0e0e0",
           200: "#c2c2c2",
@@ -27,7 +19,7 @@ export default {
           100: "#d0d1d5",
           200: "#a1a4ab",
           300: "#727681",
-          400: "#434957",
+          400: "#1F2A40",
           500: "#141b2d",
           600: "#101624",
           700: "#0c101b",
@@ -67,8 +59,8 @@ export default {
           800: "#2a2d64",
           900: "#151632",
         },
-      },
-      light: {
+      }
+    : {
         grey: {
           100: "#141414",
           200: "#292929",
@@ -124,8 +116,100 @@ export default {
           800: "#c3c6fd",
           900: "#e1e2fe",
         },
+      }),
+});
+
+//Mui themes settings
+
+export const themeSettings = (mode) => {
+  const colors = tokens(mode);
+
+  return {
+    palette: {
+      mode: mode,
+      ...(mode === "dark"
+        ? {
+            primary: {
+              main: colors.primary[500],
+            },
+            secondary: {
+              main: colors.greenAccent[500],
+            },
+            neutral: {
+              dark: colors.grey[700],
+              main: colors.grey[500],
+              light: colors.grey[100],
+            },
+            background: {
+              default: colors.primary[500],
+            },
+          }
+        : {
+            primary: {
+              main: colors.primary[100],
+            },
+            secondary: {
+              main: colors.greenAccent[500],
+            },
+            neutral: {
+              dark: colors.grey[700],
+              main: colors.grey[500],
+              light: colors.grey[100],
+            },
+            background: {
+              default: "#fcfcfc",
+            },
+          }),
+    },
+    typography: {
+      fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
+      fontSize: 12,
+      h1: {
+        fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
+        fontSize: 40,
+      },
+      h2: {
+        fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
+        fontSize: 32,
+      },
+      h3: {
+        fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
+        fontSize: 24,
+      },
+      h4: {
+        fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
+        fontSize: 20,
+      },
+      h5: {
+        fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
+        fontSize: 16,
+      },
+      h6: {
+        fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
+        fontSize: 14,
       },
     },
-  },
-  plugins: [],
+  };
+};
+
+//Context for colorMode
+
+export const colorModeContext = createContext({
+  toggleColorMode: () => {},
+});
+
+export const useMode = () => {
+  const [mode, setMode] = useState("dark");
+
+  const colorMode = useMemo(
+    () => ({
+      toggleColorMode: () =>
+        setMode((prev) => (prev === "light" ? "dark" : "light")),
+    }),
+    []
+  );
+
+  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+
+  return [theme, colorMode];
 };
