@@ -6,10 +6,11 @@ import { useContext, useState } from "react";
 import translateRoles from "../../Permissions/TranslateRoles";
 import AuthContext from "../../Contexts/AuthContext";
 import SideBarItem from "./SideBarItem";
+import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
-import HowToRegOutlinedIcon from "@mui/icons-material/HowToRegOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
 
@@ -87,14 +88,21 @@ const SideBar = () => {
                   >
                     {userName}
                   </Typography>
-                  <Typography
-                    style={{ margin: "10px 0 0 0 " }}
-                    variant="h6"
-                    color={colors.greenAccent[300]}
-                  >
+
+                  <div className="flex flex-wrap">
                     {roles.length > 0 &&
-                      roles.map((item) => translateRoles(item)).join(", ")}
-                  </Typography>
+                      roles.map((item) => (
+                        <Typography
+                          key={item}
+                          className="w-full "
+                          style={{ margin: "10px 0 0 0 " }}
+                          variant="h6"
+                          color={colors.greenAccent[300]}
+                        >
+                          {translateRoles(item)}
+                        </Typography>
+                      ))}
+                  </div>
                 </Box>
               </Box>
             )}
@@ -123,7 +131,7 @@ const SideBar = () => {
             <SideBarItem
               title="Registrar"
               to="/register"
-              icon={<HowToRegOutlinedIcon />}
+              icon={<PersonAddOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -135,6 +143,13 @@ const SideBar = () => {
               title="Pedidos"
               to="/orders"
               icon={<PointOfSaleOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <SideBarItem
+              title="Clientes"
+              to="/clients"
+              icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />

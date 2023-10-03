@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 
 const AuthContext = createContext();
@@ -41,6 +42,12 @@ export const AuthContextProvider = ({ children }) => {
     setLoading(false);
   };
 
+  const HandleLogout = () => {
+    setAuthenticated(false);
+    const cookies = new Cookies();
+    cookies.remove("Jwt_token");
+  };
+
   return (
     <>
       <AuthContext.Provider
@@ -52,6 +59,7 @@ export const AuthContextProvider = ({ children }) => {
           validateToken,
           loading,
           userName,
+          HandleLogout,
         }}
       >
         {children}

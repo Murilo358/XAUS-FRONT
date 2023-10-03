@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import AuthContext from "../Contexts/AuthContext";
 import { toast } from "react-toastify";
 
-const Login = () => {
+const Login = ({ setLoginUpdated }) => {
   const cookies = new Cookies();
 
   const { setAuthenticated } = useContext(AuthContext);
@@ -37,6 +37,7 @@ const Login = () => {
           toast.success("Logado com sucesso!", {
             position: toast.POSITION.TOP_RIGHT,
           });
+          setLoginUpdated(true);
           return navigate("/");
         }
         throw new Error("Não foi possivel logar");

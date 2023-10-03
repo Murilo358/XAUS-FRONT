@@ -14,19 +14,24 @@ import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import InputMask from "react-input-mask";
 
 import {
+  Box,
   FormControl,
   IconButton,
   InputAdornment,
   InputLabel,
   OutlinedInput,
 } from "@mui/material";
+import Header from "../Components/Header/Header";
+import { useTheme } from "@emotion/react";
+import { tokens } from "../styles/Themes";
 
 const Register = () => {
   const { jwtToken, roles } = useContext(AuthContext);
   const permission = hasPermission(roles, actions.CREATE_USER);
   const navigate = useNavigate();
   const [allRoles, setAllRoles] = useState([]);
-
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const {
     register,
     handleSubmit,
@@ -77,139 +82,158 @@ const Register = () => {
   };
 
   return (
-    <div className="flex w-3/4 mx-auto h-screen  items-center justify-center">
+    <>
       {permission ? (
-        <div className="flex  p-7 w-11/12 bg-gray-400 rounded-md">
-          <div className="flex w-1/2">
-            <img src="/registerImg.svg" alt="registerImage" />
-          </div>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-4 w-1/2"
-          >
-            <TextField
-              {...register("name", { required: true })}
-              id="name"
-              label="Nome*"
-              name="name"
-              error={!!errors.name}
-            />
-            {errors?.name && (
-              <p className="text-red-600">O campo nome é obrigatório</p>
-            )}
-            <FormControl variant="outlined">
-              <InputMask
-                {...register("cpf", { required: true })}
-                mask="999.999.999-99"
+        <div className="flex flex-col text-center items-center">
+          <Header
+            className="m-6"
+            title="Registrar "
+            subtitle="Registre novos usuários para o XAUS"
+          />
+          <div className="flex w-3/4 mx-auto mt-12  items-center justify-center">
+            <div className="flex  p-7 w-11/12 bg-gray-400 rounded-md">
+              <div className="flex w-1/2">
+                <img src="/registerImg.svg" alt="registerImage" />
+              </div>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex flex-col gap-4 w-1/2"
               >
-                {() => (
-                  <TextField
-                    id="cpf"
-                    label="CPF*"
-                    name="cpf"
-                    error={!!errors.cpf}
-                  />
+                <TextField
+                  {...register("name", { required: true })}
+                  id="name"
+                  label="Nome*"
+                  name="name"
+                  error={!!errors.name}
+                />
+                {errors?.name && (
+                  <p className="text-red-600">O campo nome é obrigatório</p>
                 )}
-              </InputMask>
-              {errors?.cpf && (
-                <p className="text-red-600">O campo CPF é obrigatório</p>
-              )}
-            </FormControl>
-            <FormControl variant="outlined">
-              <InputLabel htmlFor="filled-adornment-password">Senha</InputLabel>
-              <OutlinedInput
-                {...register("password", { required: true })}
-                id="filled-adornment-password"
-                type={showPassword ? "text" : "password"}
-                error={!!errors.password}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-              {errors?.password && (
-                <p className="text-red-600">O campo senha é obrigatório</p>
-              )}
-            </FormControl>
-            <TextField
-              {...register("email", { required: true })}
-              id="email"
-              label="Email*"
-              name="email"
-              type={"email"}
-              error={!!errors.email}
-            />
-            {errors?.email && (
-              <p className="text-red-600">O campo e-mail é obrigatório</p>
-            )}
-            <Controller
-              rules={{ required: true }}
-              name="birthDate"
-              control={control}
-              render={({ field, fieldState: { error } }) => {
-                return (
-                  <DatePicker
-                    disableFuture
-                    value={field.value}
-                    label="Data de nascimento*"
-                    onChange={(date) => {
-                      field.onChange(date);
-                    }}
-                    error={!!errors.birthDate}
-                    format="DD-MM-YYYY"
-                    slotProps={{
-                      textField: {
-                        error: !!error,
-                      },
-                    }}
+                <FormControl variant="outlined">
+                  <InputMask
+                    {...register("cpf", { required: true })}
+                    mask="999.999.999-99"
+                  >
+                    {() => (
+                      <TextField
+                        id="cpf"
+                        label="CPF*"
+                        name="cpf"
+                        error={!!errors.cpf}
+                      />
+                    )}
+                  </InputMask>
+                  {errors?.cpf && (
+                    <p className="text-red-600">O campo CPF é obrigatório</p>
+                  )}
+                </FormControl>
+                <FormControl variant="outlined">
+                  <InputLabel htmlFor="filled-adornment-password">
+                    Senha
+                  </InputLabel>
+                  <OutlinedInput
+                    {...register("password", { required: true })}
+                    id="filled-adornment-password"
+                    type={showPassword ? "text" : "password"}
+                    error={!!errors.password}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? (
+                            <MdVisibilityOff />
+                          ) : (
+                            <MdVisibility />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
                   />
-                );
-              }}
-            />
-            {errors?.birthDate && (
-              <p className="text-red-600">
-                O campo data de nascimento é obrigatório
-              </p>
-            )}
+                  {errors?.password && (
+                    <p className="text-red-600">O campo senha é obrigatório</p>
+                  )}
+                </FormControl>
+                <TextField
+                  {...register("email", { required: true })}
+                  id="email"
+                  label="Email*"
+                  name="email"
+                  type={"email"}
+                  error={!!errors.email}
+                />
+                {errors?.email && (
+                  <p className="text-red-600">O campo e-mail é obrigatório</p>
+                )}
+                <Controller
+                  rules={{ required: true }}
+                  name="birthDate"
+                  control={control}
+                  render={({ field, fieldState: { error } }) => {
+                    return (
+                      <DatePicker
+                        disableFuture
+                        value={field.value}
+                        label="Data de nascimento*"
+                        onChange={(date) => {
+                          field.onChange(date);
+                        }}
+                        error={!!errors.birthDate}
+                        format="DD-MM-YYYY"
+                        slotProps={{
+                          textField: {
+                            error: !!error,
+                          },
+                        }}
+                      />
+                    );
+                  }}
+                />
+                {errors?.birthDate && (
+                  <p className="text-red-600">
+                    O campo data de nascimento é obrigatório
+                  </p>
+                )}
 
-            <FormControl>
-              <InputLabel id="role-label">Cargo*</InputLabel>
-              <Select
-                {...register("role", { required: true })}
-                labelId="role-label"
-                id="role"
-                label="Cargo*"
-                name="role"
-                error={!!errors.role}
-              >
-                {allRoles.length > 0 &&
-                  allRoles.map((role) => (
-                    <MenuItem key={role} value={role}>
-                      {role}
-                    </MenuItem>
-                  ))}
-              </Select>
-              {!!errors.role && (
-                <p className="text-red-600">O campo cargo é obrigatório</p>
-              )}
-            </FormControl>
-            <button type="submit" className="p-4  text-slate-50">
-              REGISTRAR
-            </button>
-          </form>
+                <FormControl>
+                  <InputLabel id="role-label">Cargo*</InputLabel>
+                  <Select
+                    {...register("role", { required: true })}
+                    labelId="role-label"
+                    id="role"
+                    label="Cargo*"
+                    name="role"
+                    error={!!errors.role}
+                  >
+                    {allRoles.length > 0 &&
+                      allRoles.map((role) => (
+                        <MenuItem key={role} value={role}>
+                          {role}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                  {!!errors.role && (
+                    <p className="text-red-600">O campo cargo é obrigatório</p>
+                  )}
+                </FormControl>
+                <button
+                  style={{ backgroundColor: colors.blueAccent[600] }}
+                  type="submit"
+                  className="p-4  "
+                >
+                  REGISTRAR
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
       ) : (
         <p>Você não tem permissão :(</p>
       )}
-    </div>
+    </>
   );
 };
 

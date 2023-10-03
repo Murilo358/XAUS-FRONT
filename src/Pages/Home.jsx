@@ -1,8 +1,15 @@
+import Header from "../Components/Header/Header";
+import { Box } from "@mui/material";
 
 const Home = () => {
   return (
-    <div>HOME</div>
-  )
-}
+    <Box>
+      <Header
+        title="Dashboard"
+        subtitle="Resumo das ultimas atividades do XAUS"
+      />
+    </Box>
+  );
+};
 
-export default Home
+export default Home;
