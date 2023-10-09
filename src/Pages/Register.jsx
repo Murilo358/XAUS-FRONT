@@ -47,6 +47,7 @@ const Register = () => {
     };
     getAllRoles();
   }, []);
+
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -54,6 +55,7 @@ const Register = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
   const onSubmit = async (data) => {
     data.birthDate = dayjs(new Date(data.birthDate)).format("YYYY-MM-DD");
 
@@ -90,14 +92,18 @@ const Register = () => {
             title="Registrar "
             subtitle="Registre novos usuários para o XAUS"
           />
-          <div className="flex w-3/4 mx-auto mt-12  items-center justify-center">
-            <div className="flex  p-7 w-11/12 bg-gray-400 rounded-md">
-              <div className="flex w-1/2">
-                <img src="/registerImg.svg" alt="registerImage" />
+          <div className="flex w-3/4 mx-auto mt-12   items-center justify-center">
+            <div className="flex  lg:p-7 w-full lg:w-11/12 flex-col lg:flex-row bg-gray-400 rounded-md">
+              <div className="flex  lg:w-1/2 w-full ">
+                <img
+                  className="w-full"
+                  src="/registerImg.svg"
+                  alt="registerImage"
+                />
               </div>
               <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="flex flex-col gap-4 w-1/2"
+                className="flex flex-col gap-4  lg:w-1/2 w-full "
               >
                 <TextField
                   {...register("name", { required: true })}

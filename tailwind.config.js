@@ -1,7 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-import { useTheme } from "@emotion/react";
-import { tokens } from "./src/styles/Themes";
-import useThemeContext from "./src/Hooks/useThemeContext";
 
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],

@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Login from "./Pages/Login";
 import { colorModeContext, tokens, useMode } from "./styles/Themes";
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
@@ -12,7 +12,6 @@ import Topbar from "./Components/Topbar";
 import SideBar from "./Components/SideBar/SideBar";
 import { useState } from "react";
 import Clients from "./Pages/Clients";
-import { useTheme } from "@emotion/react";
 
 function App() {
   const { validateToken, loading, authenticated } = useContext(AuthContext);
@@ -56,8 +55,7 @@ function App() {
                 },
               }}
             >
-              {authenticated && !loading && <Topbar />}
-
+              <Topbar />
               <Routes>
                 <Route
                   path="/register"
@@ -109,7 +107,6 @@ function App() {
                     )
                   }
                 />
-                {/* </Route> */}
                 <Route
                   path="/Login"
                   element={<Login setLoginUpdated={setLoginUpdated} />}
