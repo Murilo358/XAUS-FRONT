@@ -1,4 +1,4 @@
-import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../styles/Themes";
@@ -44,8 +44,9 @@ const SideBar = () => {
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
           <MenuItem
+            active={false}
             onClick={() => setIsCollapsed(!isCollapsed)}
-            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+            icon={isCollapsed ? <MenuOutlinedIcon /> : null}
             style={{
               margin: "10px 0 20px 0",
               color: colors.grey[100],
@@ -61,6 +62,7 @@ const SideBar = () => {
                   >
                     Xaus
                   </Typography>
+
                   <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                     <MenuOpenOutlinedIcon />
                   </IconButton>
@@ -115,6 +117,7 @@ const SideBar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+
             {/* <Typography variant="h6" color={colors.grey[300]}>
               Produtos
             </Typography> */}

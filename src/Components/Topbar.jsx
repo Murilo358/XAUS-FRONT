@@ -1,5 +1,11 @@
-import React from "react";
-import { Box, IconButton, useTheme } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  IconButton,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { colorModeContext, tokens } from "../styles/Themes";
 import { InputBase } from "@mui/material";
 import LightModeOutlined from "@mui/icons-material/LightModeOutlined";
@@ -9,15 +15,16 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { useContext } from "react";
+import UseAllRoutes from "../Hooks/UseAllRoutes";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import AuthContext from "../Contexts/AuthContext";
+import { redirect } from "react-router-dom";
 
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(colorModeContext);
-  const { HandleLogout } = useContext(AuthContext);
+  const { HandleLogout, authenticated } = useContext(AuthContext);
 
   const [openedMenu, setOpenedMenu] = useState(false);
 
@@ -29,6 +36,12 @@ const Topbar = () => {
     <div className="flex justify-between p-2">
       <Box
         sx={{
+          "&  MuiAutocomplete-endAdornment": {
+            backgroundColor: "red !important",
+          },
+          "&  css-1q60rmi-MuiAutocomplete-endAdornment": {
+            backgroundColor: "red !important",
+          },
           "& label.Mui-focused": {
             color: colors.greenAccent[300],
           },
@@ -49,13 +62,39 @@ const Topbar = () => {
         className="flex rounded-sm"
         backgroundColor={colors.primary[400]}
       >
-        <InputBase
-          sx={{ ml: 2, flex: 1, backgroundColor: colors.primary[400] }}
-          placeholder="Buscar"
-        />
-        <IconButton type="button" sx={{ p: 1 }}>
-          <SearchIcon />
-        </IconButton>
+        {authenticated && (
+          <>
+            <Autocomplete
+              forcePopupIcon={false}
+              className="p-1"
+              onChange={(e, value) => (window.top.location = value.route)}
+              options={UseAllRoutes()}
+              getOptionLabel={(option) => option.title}
+              style={{ width: 200 }}
+              renderInput={(params) => {
+                const { InputLabelProps, InputProps, ...rest } = params;
+                return (
+                  <div className="flex">
+                    <InputBase
+                      placeholder="Busque por páginas"
+                      sx={{
+                        ml: 2,
+                        flex: 1,
+                        backgroundColor: colors.primary[400],
+                      }}
+                      {...params.InputProps}
+                      {...rest}
+                    />
+
+                    <IconButton type="button" sx={{ p: 1 }}>
+                      <SearchIcon />
+                    </IconButton>
+                  </div>
+                );
+              }}
+            />
+          </>
+        )}
       </Box>
       <Box display="flex">
         <IconButton onClick={colorMode.toggleColorMode}>
@@ -65,24 +104,32 @@ const Topbar = () => {
             <LightModeOutlined />
           )}
         </IconButton>
-        <IconButton>
-          <NotificationsOutlinedIcon />
-        </IconButton>
-        <IconButton>
-          <SettingsOutlinedIcon />
-        </IconButton>
-        <IconButton>
-          <PersonOutlinedIcon onClick={() => handleMenuClick()} />
-        </IconButton>
-        {openedMenu && (
-          <div className="absolute  z-20 top-14 bg-dark-primary-400 right-1  w-[150px] p-2 border-solid border-grayPrimary shadow-md flex flex-col justify-center items-center rounded-lg">
-            <button
-              className="text-primary text-sm font-semibold"
-              onClick={() => HandleLogout()}
-            >
-              LogOut
-            </button>
-          </div>
+        {authenticated && (
+          <>
+            <IconButton>
+              <NotificationsOutlinedIcon />
+            </IconButton>
+            <IconButton>
+              <SettingsOutlinedIcon />
+            </IconButton>
+            <IconButton onClick={() => handleMenuClick()}>
+              <PersonOutlinedIcon />
+            </IconButton>
+            {openedMenu && (
+              <Box
+                backgroundColor={colors.blueAccent[800]}
+                className="absolute z-20 top-14 right-1  w-[150px] shadow-md flex flex-col justify-center items-center rounded-lg"
+              >
+                <Button
+                  className="w-full h-full"
+                  onClick={() => HandleLogout()}
+                  variant="outlined"
+                >
+                  <Typography color={colors.grey[100]}>Logout</Typography>
+                </Button>
+              </Box>
+            )}
+          </>
         )}
       </Box>
     </div>

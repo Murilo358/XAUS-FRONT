@@ -1,5 +1,4 @@
 import { useTheme } from "@emotion/react";
-import React from "react";
 import { tokens } from "../../styles/Themes";
 import { MenuItem } from "react-pro-sidebar";
 import { Typography } from "@mui/material";
