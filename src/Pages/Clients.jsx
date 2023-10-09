@@ -16,7 +16,20 @@ import {
   GridToolbarContainer,
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
+import { Box, Button, useTheme } from "@mui/material";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridRowModes,
+  GridToolbarContainer,
+  GridRowEditStopReasons,
+} from "@mui/x-data-grid";
 import { tokens } from "../styles/Themes";
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
@@ -225,6 +238,7 @@ const Clients = () => {
             {
               (createdAt = dayjs(new Date(createdAt)).format(
                 "YYYY-MM-DD - HH:mm"
+                "YYYY-MM-DD - HH:mm"
               ))
             }
           </Box>
@@ -235,6 +249,7 @@ const Clients = () => {
     {
       field: "name",
       headerName: "Nome",
+      editable: true,
       editable: true,
       flex: 1,
       cellClassName: "name-column-cell",
@@ -333,6 +348,7 @@ const Clients = () => {
             subtitle="Visuzalize todos os clientes cadastrados"
           />
           {/*  .MuiDataGrid-row--editing .MuiDataGrid-cell*/}
+          {/*  .MuiDataGrid-row--editing .MuiDataGrid-cell*/}
           <Box
             sx={{
               "& .css-1mx81p6-MuiDataGrid-root .MuiDataGrid-row--editing .MuiDataGrid-cell":
@@ -369,6 +385,7 @@ const Clients = () => {
                 color: `${colors.greenAccent[200]} !important`,
               },
             }}
+            className=" flex items-center flex-col justify-center "
             className=" flex items-center flex-col justify-center "
           >
             <DataGrid

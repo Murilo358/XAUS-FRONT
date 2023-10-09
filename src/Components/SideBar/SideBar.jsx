@@ -13,6 +13,7 @@ import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
+import { useEffect } from "react";
 
 const SideBar = () => {
   const theme = useTheme();
@@ -20,6 +21,19 @@ const SideBar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
   const { userName, roles } = useContext(AuthContext);
+  const [width, setWidth] = useState(window.innerWidth);
+
+  function getSize() {
+    setWidth(window.innerWidth);
+  }
+
+  useEffect(() => {
+    window.addEventListener("resize", getSize);
+
+    if (width < 600) {
+      setIsCollapsed(true);
+    }
+  }, [window.innerWidth]);
 
   return (
     <Box
