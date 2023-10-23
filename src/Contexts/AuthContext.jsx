@@ -1,5 +1,4 @@
 import { createContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 
 const AuthContext = createContext();
@@ -11,6 +10,7 @@ export const AuthContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [roles, setRoles] = useState([]);
   const [userName, setUserName] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   const validateToken = async () => {
     setLoading(true);
@@ -28,6 +28,7 @@ export const AuthContextProvider = ({ children }) => {
       if (response.ok) {
         const res = await response.json();
         setUserName(res.userName);
+        setUserId(res.userId);
 
         setRoles(
           res.roles.map(function (item) {
@@ -59,6 +60,7 @@ export const AuthContextProvider = ({ children }) => {
           validateToken,
           loading,
           userName,
+          userId,
           HandleLogout,
         }}
       >

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import AuthContext from "../Contexts/AuthContext";
 import { actions } from "../Permissions/Constants";
 import { useState } from "react";
@@ -7,34 +7,34 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import dayjs from "dayjs";
+import InputMask from "react-input-mask";
 import Header from "../Components/Header/Header";
-import { Box, Button, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  TextField,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
 import {
   DataGrid,
   GridActionsCellItem,
   GridRowModes,
   GridToolbarContainer,
   GridRowEditStopReasons,
+  GridToolbarDensitySelector,
+  GridToolbarExport,
+  useGridApiContext,
 } from "@mui/x-data-grid";
-import { Box, Button, useTheme } from "@mui/material";
-import {
-  DataGrid,
-  GridActionsCellItem,
-  GridRowModes,
-  GridToolbarContainer,
-  GridRowEditStopReasons,
-} from "@mui/x-data-grid";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Close";
 import { tokens } from "../styles/Themes";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Close";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Close";
+import OrdersModal from "../Components/OrdersModal/OrdersModal";
+import DataGridBox from "../Components/DataGridBox/DataGridBox";
 
 const Clients = () => {
   const theme = useTheme();
@@ -43,6 +43,15 @@ const Clients = () => {
   const permissions = hasPermission(roles, actions.SEE_ALL_PRODUCTS);
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
+  const [openModal, setOpenModal] = useState(false);
+  const [modalOrders, setModalOrders] = useState([]);
+
+  const [loading, setLoading] = useState(false);
+  const [creationMode, setCreationMode] = useState(false);
+
+  const createPermission = hasPermission(roles, actions.CREATE_CLIENTS);
+
+  const [newClientId, setNewClientId] = useState(0);
 
   const deleteClient = async (id) => {
     try {
@@ -62,11 +71,7 @@ const Clients = () => {
       }
     } catch (error) {
       console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: error.message,
-      });
+
       return null;
     }
   };
@@ -93,6 +98,8 @@ const Clients = () => {
     } catch (error) {
       console.error(error);
       Swal.fire({
+        background: colors.primary[400],
+        color: colors.grey[100],
         icon: "error",
         title: "Oops...",
         text: error.message,
@@ -113,6 +120,8 @@ const Clients = () => {
           return;
         }
         Swal.fire({
+          background: colors.primary[400],
+          color: colors.grey[100],
           icon: "error",
           title: "Oops...",
           text: "Erro ao buscar todos os clientes",
@@ -123,52 +132,128 @@ const Clients = () => {
   }, []);
 
   function EditToolbar(props) {
+    // eslint-disable-next-line react/prop-types
     const { setRows, setRowModesModel } = props;
 
-    const handleClick = () => {
-      const id = 26;
+    const handleAddClient = () => {
+      setNewClientId(newClientId - 1);
+      setCreationMode(true);
       setRows((oldRows) => [
         ...oldRows,
-        { id, createdAt: "", email: "", name: "", cpf: "", isNew: true },
+        {
+          id: newClientId,
+          createdAt: new Date(),
+          email: "",
+          name: "",
+          cpf: "",
+          isNew: true,
+        },
       ]);
       setRowModesModel((oldModel) => ({
         ...oldModel,
-        [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+        [newClientId]: { mode: GridRowModes.Edit },
       }));
     };
 
     return (
       <GridToolbarContainer>
-        <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-          Add record
-        </Button>
+        <Box>
+          {createPermission && (
+            <Button
+              id="newClient"
+              sx={{ color: colors.grey[100] }}
+              startIcon={<PersonAddOutlinedIcon />}
+              onClick={handleAddClient}
+            >
+              <Typography> Novo cliente </Typography>
+            </Button>
+          )}
+        </Box>
+        <Box>
+          <GridToolbarExport
+            sx={{
+              fontSize: "0.8571428571428571rem",
+              height: "32.578px",
+              color: colors.grey[100],
+            }}
+          />
+        </Box>
+        <Box>
+          <GridToolbarDensitySelector
+            sx={{
+              fontSize: "0.8571428571428571rem",
+              height: "32.578px",
+              color: colors.grey[100],
+            }}
+          />
+        </Box>
       </GridToolbarContainer>
     );
   }
 
+  const createClient = async (data) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`http://localhost:8080/clients/create`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      setLoading(false);
+
+      if (response.ok) {
+        setCreationMode(false);
+        return response;
+      } else {
+        throw new Error("Erro ao salvar o cliente");
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        background: colors.primary[400],
+        color: colors.grey[100],
+        icon: "error",
+        title: "Oops...",
+        text: error?.message,
+      });
+      setLoading(false);
+      return null;
+    }
+  };
+
   const handleEditClick = (id) => () => {
     if (id === 1) {
       Swal.fire({
+        background: colors.primary[400],
+        color: colors.grey[100],
         icon: "error",
         title: "Oops...",
         text: "Esse cliente não pode ser alterado!",
       });
       return;
     }
+    setCreationMode(false);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
   const handleSaveClick = (id) => () => {
+    setCreationMode(false);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
   const handleDeleteClick = async (id) => {
     if (id === 1) {
       Swal.fire({
+        background: colors.primary[400],
+        color: colors.grey[100],
         icon: "error",
         title: "Oops...",
         text: "Esse cliente não pode ser deletado!",
       });
+      setCreationMode(false);
       return;
     }
 
@@ -177,7 +262,7 @@ const Clients = () => {
       toast.success(`Cliente deletado com sucesso!`, {
         position: toast.POSITION.TOP_RIGHT,
       });
-
+      setCreationMode(false);
       setRows(rows.filter((row) => row.id !== id));
     }
   };
@@ -187,7 +272,7 @@ const Clients = () => {
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
-
+    setCreationMode(false);
     const editedRow = rows.find((row) => row.id === id);
 
     if (editedRow.isNew) {
@@ -195,27 +280,89 @@ const Clients = () => {
     }
   };
 
-  const processRowUpdate = async (newRow) => {
-    if (newRow.name === "" || newRow.name === null) {
+  const processRowUpdate = async (newRow, oldRow) => {
+    console.log(newRow, oldRow);
+    if (newRow.name === "" || newRow.name === null || newRow.cpf === "") {
       Swal.fire({
+        background: colors.primary[400],
+        color: colors.grey[100],
         icon: "error",
         title: "Oops...",
-        text: "Nome ou email são obrigatórios",
+        text: "Todos os campos são obrigatórios",
       });
+      setRows(rows.filter((row) => row.id !== newRow.id));
+      document.getElementById("newClient").click();
       return;
     }
 
-    const res = await updateClients(newRow);
-    if (res.ok) {
-      toast.success(`Cliente ${newRow.name} atualizado com sucesso!`, {
-        position: toast.POSITION.TOP_RIGHT,
+    if (!validateEmail(newRow.email)) {
+      Swal.fire({
+        background: colors.primary[400],
+        color: colors.grey[100],
+        icon: "error",
+        title: "Oops...",
+        text: "Insira um email valido",
       });
-      const updatedRow = { ...newRow, isNew: false };
-      setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-      return updatedRow;
+      setRows(rows.filter((row) => row.id !== newRow.id));
+      document.getElementById("newClient").click();
+      return;
+    }
+
+    if (!newRow.isNew) {
+      const res = await updateClients(newRow);
+      if (res.ok) {
+        toast.success(`Cliente ${newRow.name} atualizado com sucesso!`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        const updatedRow = { ...newRow, isNew: false };
+        setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+        return updatedRow;
+      }
+    } else {
+      const res = await createClient(newRow);
+
+      if (res.ok) {
+        const savedClient = await res.json();
+
+        toast.success(`Cliente: ${newRow.name} Criado com sucesso!`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        const updatedRow = { ...newRow, isNew: false, id: savedClient.id };
+        setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+        setCreationMode(false);
+        return updatedRow;
+      }
     }
   };
 
+  function CustomEditComponent(props) {
+    // eslint-disable-next-line react/prop-types
+    const { id, value, field } = props;
+    const apiRef = useGridApiContext();
+    const ref = useRef();
+
+    const handleValueChange = (event) => {
+      const newValue = event.target.value;
+      apiRef.current.setEditCellValue({ id, field, value: newValue });
+    };
+
+    return (
+      <FormControl
+        sx={{
+          width: "100%",
+        }}
+      >
+        <InputMask
+          ref={ref}
+          value={value}
+          onChange={handleValueChange}
+          mask="999.999.999-99"
+        >
+          {() => <TextField id="cpf" name="cpf" />}
+        </InputMask>
+      </FormControl>
+    );
+  }
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
@@ -225,6 +372,17 @@ const Clients = () => {
       event.defaultMuiPrevented = true;
     }
   };
+
+  const renderCustomEditComponent = (params) => {
+    return <CustomEditComponent {...params} />;
+  };
+
+  function validateEmail(email) {
+    console.log(email);
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
 
   const columns = [
     { field: "id", flex: 1, headerName: "ID" },
@@ -237,54 +395,81 @@ const Clients = () => {
           <Box>
             {
               (createdAt = dayjs(new Date(createdAt)).format(
-                "YYYY-MM-DD - HH:mm"
-                "YYYY-MM-DD - HH:mm"
+                "DD-MM-YYYY - HH:mm"
               ))
             }
           </Box>
         );
       },
     },
-    { field: "email", flex: 1, headerName: "Email" },
+    {
+      field: "email",
+      flex: 1,
+      headerName: "Email",
+      editable: creationMode,
+    },
     {
       field: "name",
       headerName: "Nome",
       editable: true,
-      editable: true,
       flex: 1,
       cellClassName: "name-column-cell",
     },
+
     {
       field: "cpf",
       headerName: "CPF",
       flex: 1,
       headerAlign: "left",
+      editable: creationMode,
       align: "left",
+      renderEditCell: renderCustomEditComponent,
     },
     {
       field: "orders",
       headerName: "Pedidos",
       sortable: false,
       renderCell: ({ id }) => {
-        const onClick = (e) => {
+        const onClick = async (e) => {
           e.stopPropagation();
-          console.log(id);
-        };
+          await fetch(`http://localhost:8080/orders/byclient/${id}`, {
+            method: "GET",
+            headers: { Authorization: `Bearer ${jwtToken}` },
+          }).then(async (res) => {
+            if (res.ok) {
+              const response = await res.json();
+              setModalOrders(response);
+              setOpenModal(true);
+              return;
+            }
 
-        return (
-          <Box>
-            <Button
-              style={{
-                backgroundColor: colors.greenAccent[500],
-              }}
-              type="submit"
-              className="p-4  "
-              onClick={onClick}
-            >
-              Ver pedidos
-            </Button>
-          </Box>
-        );
+            const { message } = await res.json();
+            Swal.fire({
+              background: colors.primary[400],
+              color: colors.grey[100],
+              icon: "error",
+              title: "Oops...",
+              text: message ? message : "Erro ao buscar todos os pedidos...",
+            });
+          });
+        };
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+        if (!isInEditMode && !creationMode) {
+          return (
+            <Box>
+              <Button
+                style={{
+                  backgroundColor: colors.greenAccent[500],
+                }}
+                type="submit"
+                className="p-4  "
+                onClick={onClick}
+              >
+                Ver pedidos
+              </Button>
+            </Box>
+          );
+        }
       },
     },
     {
@@ -347,47 +532,12 @@ const Clients = () => {
             title="Clientes "
             subtitle="Visuzalize todos os clientes cadastrados"
           />
-          {/*  .MuiDataGrid-row--editing .MuiDataGrid-cell*/}
-          {/*  .MuiDataGrid-row--editing .MuiDataGrid-cell*/}
-          <Box
-            sx={{
-              "& .css-1mx81p6-MuiDataGrid-root .MuiDataGrid-row--editing .MuiDataGrid-cell":
-                {
-                  backgroundColor: colors.blueAccent[700],
-                },
-              "& .css-1mx81p6-MuiDataGrid-root .MuiDataGrid-cell.MuiDataGrid-cell--editing":
-                {
-                  backgroundColor: colors.blueAccent[600],
-                },
-
-              "& .MuiDataGrid-root": {
-                border: "none",
-              },
-
-              "& .MuiDataGrid-cell": {
-                borderBottom: "none",
-              },
-              "& .name-column--cell": {
-                color: colors.greenAccent[300],
-              },
-              "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: colors.blueAccent[800],
-                borderBottom: "none",
-              },
-              "& .MuiDataGrid-virtualScroller": {
-                backgroundColor: colors.primary[400],
-              },
-              "& .MuiDataGrid-footerContainer": {
-                borderTop: "none",
-                backgroundColor: colors.blueAccent[800],
-              },
-              "& .MuiCheckbox-root": {
-                color: `${colors.greenAccent[200]} !important`,
-              },
-            }}
-            className=" flex items-center flex-col justify-center "
-            className=" flex items-center flex-col justify-center "
-          >
+          <DataGridBox>
+            <OrdersModal
+              openModal={openModal}
+              setOpenModal={setOpenModal}
+              orders={modalOrders}
+            />
             <DataGrid
               className="lg:w-11/12 w-full"
               editMode="row"
@@ -395,6 +545,15 @@ const Clients = () => {
                 sorting: {
                   sortModel: [{ field: "id", sort: "asc" }],
                 },
+              }}
+              localeText={{
+                toolbarDensity: "Densidade da tabela",
+                toolbarExport: "Exportar",
+                toolbarExportCSV: "Baixar como CSV",
+                toolbarExportPrint: "Imprimir",
+                toolbarDensityCompact: "Compacto",
+                toolbarDensityStandard: "Padrão",
+                toolbarDensityComfortable: "Confortável",
               }}
               onRowModesModelChange={handleRowModesModelChange}
               onRowEditStop={handleRowEditStop}
@@ -408,8 +567,9 @@ const Clients = () => {
               }}
               rows={rows}
               columns={columns}
+              loading={loading}
             />
-          </Box>
+          </DataGridBox>
         </>
       ) : (
         <p>Você não tem permissão :( </p>

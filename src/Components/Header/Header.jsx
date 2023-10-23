@@ -1,11 +1,11 @@
 import { Typography, Box, useTheme } from "@mui/material";
 import { tokens } from "../../styles/Themes";
-
-const Header = ({ title, subtitle }) => {
+// eslint-disable-next-line react/prop-types
+const Header = ({ title, subtitle, margin = "20px" }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
-    <Box m="20px">
+    <Box m={margin}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box mb="30px">
           <Typography

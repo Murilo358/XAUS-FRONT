@@ -2,7 +2,7 @@ import { actions, roles } from "./Constants.js";
 
 const mappings = new Map();
 
-mappings.set(actions.VIEW_PRODUCTS, [roles.ADMIN, roles.SALES]);
+mappings.set(actions.VIEW_PRODUCTS, [roles.ADMIN, roles.SALES, roles.PACKAGER]);
 mappings.set(actions.DELETE_PRODUCTS, [roles.ADMIN]);
 mappings.set(actions.CREATE_PRODUCTS, [roles.ADMIN]);
 mappings.set(actions.UPDATE_PRODUCTS, [roles.ADMIN]);

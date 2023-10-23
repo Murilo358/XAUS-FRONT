@@ -14,7 +14,6 @@ import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import InputMask from "react-input-mask";
 
 import {
-  Box,
   FormControl,
   IconButton,
   InputAdornment,
@@ -24,6 +23,7 @@ import {
 import Header from "../Components/Header/Header";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../styles/Themes";
+import translateRoles from "../Permissions/TranslateRoles";
 
 const Register = () => {
   const { jwtToken, roles } = useContext(AuthContext);
@@ -86,7 +86,7 @@ const Register = () => {
   return (
     <>
       {permission ? (
-        <div className="flex flex-col text-center items-center">
+        <div className="flex flex-col ">
           <Header
             className="m-6"
             title="Registrar "
@@ -217,7 +217,7 @@ const Register = () => {
                     {allRoles.length > 0 &&
                       allRoles.map((role) => (
                         <MenuItem key={role} value={role}>
-                          {role}
+                          {translateRoles(role)}
                         </MenuItem>
                       ))}
                   </Select>

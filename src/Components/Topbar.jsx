@@ -18,7 +18,6 @@ import { useContext } from "react";
 import UseAllRoutes from "../Hooks/UseAllRoutes";
 import { useState } from "react";
 import AuthContext from "../Contexts/AuthContext";
-import { redirect } from "react-router-dom";
 
 const Topbar = () => {
   const theme = useTheme();
@@ -33,7 +32,7 @@ const Topbar = () => {
   };
 
   return (
-    <div className="flex justify-between p-2">
+    <Box className="flex justify-between p-2 shadow-md">
       <Box
         sx={{
           "&  MuiAutocomplete-endAdornment": {
@@ -72,7 +71,7 @@ const Topbar = () => {
               getOptionLabel={(option) => option.title}
               style={{ width: 200 }}
               renderInput={(params) => {
-                const { InputLabelProps, InputProps, ...rest } = params;
+                const { ...rest } = params;
                 return (
                   <div className="flex">
                     <InputBase
@@ -132,7 +131,7 @@ const Topbar = () => {
           </>
         )}
       </Box>
-    </div>
+    </Box>
   );
 };
 
