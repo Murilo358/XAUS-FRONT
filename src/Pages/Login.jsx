@@ -87,72 +87,89 @@ const Login = ({ setLoginUpdated }) => {
   };
 
   return (
-    <div className="flex  mx-auto items-center justify-center">
-      <form onSubmit={handleSubmit(HandleLogin)}>
-        <Box
-          className="flex flex-col gap-5"
-          sx={{
-            "& .MuiLoadingButton-root": {
-              color: colors.primary[800],
-              backgroundColor: colors.greenAccent[500],
-            },
-            "& .MuiLoadingButton-root:hover": {
-              color: colors.primary[800],
-              backgroundColor: colors.greenAccent[700],
-            },
-          }}
-        >
-          <TextField
-            {...register("email", { required: true })}
-            id="email"
-            label="Email*"
-            name="email"
-            type={"email"}
-            error={!!errors.email}
-          />
-          {errors?.email && (
-            <p className="text-red-600">O campo e-mail é obrigatório</p>
-          )}
-          <FormControl variant="outlined">
-            <InputLabel htmlFor="filled-adornment-password">Senha</InputLabel>
-            <OutlinedInput
-              {...register("password", { required: true })}
-              id="filled-adornment-password"
-              type={showPassword ? "text" : "password"}
-              error={!!errors.password}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-            {errors?.password && (
-              <p className="text-red-600">O campo senha é obrigatório</p>
-            )}
-          </FormControl>
-
-          <LoadingButton
-            type="submit"
-            backgroundColor={colors.greenAccent[400]}
-            endIcon={<SendIcon />}
-            loading={loading}
-            loadingPosition="end"
-            variant="contained"
+    <Box className="flex  mx-auto items-center justify-center">
+      <div className="flex w-3/4 mx-auto mt-12   items-center justify-center">
+        <div className="flex  lg:p-7 w-full lg:w-11/12 flex-col lg:flex-row bg-gray-400 rounded-md">
+          <div className="flex  lg:w-1/2 w-full ">
+            <img className="w-full" src="/Login.svg" alt="LoginImage" />
+          </div>
+          <form
+            className="lg:w-1/2 flex flex-col justify-center w-full  text-center"
+            onSubmit={handleSubmit(HandleLogin)}
           >
-            <span>
-              <Typography variant="h4">LOGIN</Typography>
-            </span>
-          </LoadingButton>
-        </Box>
-      </form>
-    </div>
+            <Typography
+              variant="h2"
+              color={colors.grey[100]}
+              fontWeight="bold"
+              sx={{ mb: "5px" }}
+            >
+              Seja bem vindo ao XAUS!
+            </Typography>
+            <Box
+              className="flex flex-col gap-5"
+              sx={{
+                "& .MuiLoadingButton-root": {
+                  color: colors.primary[800],
+                  backgroundColor: colors.blueAccent[400],
+                },
+                "& .MuiLoadingButton-root:hover": {
+                  color: colors.primary[800],
+                  backgroundColor: colors.blueAccent[500],
+                },
+              }}
+            >
+              <TextField
+                {...register("email", { required: true })}
+                id="email"
+                label="Email*"
+                name="email"
+                type={"email"}
+                error={!!errors.email}
+              />
+              {errors?.email && (
+                <p className="text-red-600">O campo e-mail é obrigatório</p>
+              )}
+              <FormControl variant="outlined">
+                <InputLabel htmlFor="filled-adornment-password">
+                  Senha
+                </InputLabel>
+                <OutlinedInput
+                  {...register("password", { required: true })}
+                  id="filled-adornment-password"
+                  type={showPassword ? "text" : "password"}
+                  error={!!errors.password}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+                {errors?.password && (
+                  <p className="text-red-600">O campo senha é obrigatório</p>
+                )}
+              </FormControl>
+
+              <LoadingButton
+                type="submit"
+                endIcon={<SendIcon />}
+                loading={loading}
+                loadingPosition="end"
+                variant="contained"
+              >
+                <Typography variant="h4">LOGIN</Typography>
+              </LoadingButton>
+            </Box>
+          </form>
+        </div>
+      </div>
+    </Box>
   );
 };
 
