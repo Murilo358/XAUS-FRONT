@@ -53,8 +53,10 @@ const Login = ({ setLoginUpdated }) => {
       setLoading(true);
       await fetch("https://xaus-backend.up.railway.app/auth/login", {
         method: "POST",
+        mode: "cors",
         headers: {
           "Content-type": "application/json",
+          "Access-Control-Allow-Origin": "*",
         },
 
         body: JSON.stringify(data),
