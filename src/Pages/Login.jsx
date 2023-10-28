@@ -55,7 +55,7 @@ const Login = ({ setLoginUpdated }) => {
         method: "POST",
         headers: {
           "Content-type": "application/json",
-          " origin": "https://xaus-front.vercel.app/",
+          origin: "https://xaus-front.vercel.app/",
         },
 
         body: JSON.stringify(data),
