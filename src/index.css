@@ -9,13 +9,13 @@ body,
 .app,
 .content {
   min-height: 100vh;
-  width: 100%;
+  width: 100vw;
   font-family: "Source Sans Pro", sans-serif;
 }
 
 .app {
   display: flex;
-
+  min-height: 100vh;
   position: relative;
 }
 
@@ -32,7 +32,12 @@ body,
 ::-webkit-scrollbar-thumb {
   background: #888;
 }
-
+.pro-sidebar.collapsed {
+  min-height: 100%;
+}
+.pro-sidebar {
+  min-height: 100vh;
+}
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;

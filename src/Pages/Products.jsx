@@ -31,10 +31,25 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import NewOrderModal from "../Components/NewOrderModal/NewOrderModal";
 import DataGridBox from "../Components/DataGridBox/DataGridBox";
+import { useEffect } from "react";
 
 //APENAS ADMIN PODERÁ EDITAR, EXCLUIR E ETC
 const Products = () => {
   const { jwtToken, roles } = useContext(AuthContext);
+
+  const [width, setWidth] = useState(window.innerWidth);
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowSizeChange);
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange);
+    };
+  }, []);
+
+  const isMobile = width <= 768;
 
   const viewPermission = hasPermission(roles, actions.VIEW_PRODUCTS);
   const editPermission = hasPermission(roles, actions.UPDATE_PRODUCTS);
@@ -57,7 +72,7 @@ const Products = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:8080/products/delete/${id}`,
+        `https://xaus-backend.up.railway.app/products/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -88,14 +103,17 @@ const Products = () => {
   const createProduct = async (newData) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8080/products/create`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${jwtToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newData),
-      });
+      const response = await fetch(
+        `https://xaus-backend.up.railway.app/products/create`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newData),
+        }
+      );
       setLoading(false);
       if (response.ok) {
         return response;
@@ -120,7 +138,7 @@ const Products = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:8080/products/update/${newData.id}`,
+        `https://xaus-backend.up.railway.app/products/update/${newData.id}`,
         {
           method: "PUT",
           headers: {
@@ -153,7 +171,7 @@ const Products = () => {
   useMemo(() => {
     const getAllProducts = async () => {
       setLoading(true);
-      await fetch("http://localhost:8080/products/getAll", {
+      await fetch("https://xaus-backend.up.railway.app/products/getAll", {
         method: "GET",
         headers: { Authorization: `Bearer ${jwtToken}` },
       }).then(async (res) => {
@@ -367,24 +385,24 @@ const Products = () => {
   };
 
   const columns = [
-    { field: "id", flex: 1, headerName: "ID" },
+    { field: "id", headerName: "ID", flex: isMobile ? 0 : 1 },
     {
       field: "name",
       headerName: "Nome",
       editable: editPermission,
-      flex: 1,
-      cellClassName: "name-column-cell",
+      flex: isMobile ? 0 : 1,
     },
     {
       field: "description",
       headerName: "Descrição",
-      flex: 1,
+      flex: isMobile ? 0 : 1,
       headerAlign: "left",
       editable: editPermission,
       align: "left",
     },
     {
       field: "price",
+      flex: isMobile ? 0 : 1,
       headerName: "Valor",
       headerAlign: "center",
       align: "center",
@@ -402,7 +420,7 @@ const Products = () => {
     {
       field: "quantity",
       headerName: "Quantidade disponivel",
-      flex: 1,
+
       type: "number",
       headerAlign: "left",
       editable: editPermission,
@@ -510,7 +528,7 @@ const Products = () => {
             products={selectedRows}
           />
           <DataGrid
-            className="lg:w-11/12 "
+            className="w-full lg:w-11/12 "
             editMode="row"
             initialState={{
               sorting: {

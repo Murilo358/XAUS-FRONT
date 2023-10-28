@@ -29,7 +29,7 @@ const Home = () => {
 
   useMemo(() => {
     const getDashboardReports = async () => {
-      await fetch("http://localhost:8080/reports/dashboard", {
+      await fetch("https://xaus-backend.up.railway.app/reports/dashboard", {
         method: "GET",
         headers: { Authorization: `Bearer ${jwtToken}` },
       }).then(async (res) => {
@@ -91,56 +91,72 @@ const Home = () => {
         title="Dashboard"
         subtitle="Resumo das atividades mensais do XAUS"
       />
-      <Box className="w-100 flex flex-col justify-center items-center">
+      <Box className="flex flex-col justify-center items-center">
         <Box
           sx={{ backgroundColor: colors.primary[400] }}
-          className="flex p-4 rounded-md gap-10  flex-wrap lg:flex-nowrap "
+          className="flex p-4 rounded-md gap-10 md:w-auto flex-wrap xl:flex-nowrap "
         >
-          <StatBox
-            title="Novos clientes"
-            subtitle="Clientes no ultimo mês"
-            icon={<PeopleOutlinedIcon />}
-            progress={
-              (100 * clientsReport.newClients) / clientsReport.allClients
-            }
-            increase={`${clientsReport.newClients}+ `}
-          />
+          <Box className="w-[100%] xl:w-[400px]">
+            <StatBox
+              title="Novos clientes"
+              subtitle="Clientes no ultimo mês"
+              icon={<PeopleOutlinedIcon />}
+              progress={
+                (100 * clientsReport.newClients) / clientsReport.allClients
+              }
+              increase={`${clientsReport.newClients}+ `}
+            />
+          </Box>
 
-          <StatBox
-            title="Novos pedidos"
-            subtitle="Pedidos no ultimo mês"
-            icon={<ShoppingCartOutlinedIcon />}
-            progress={(100 * ordersReports.newOrders) / ordersReports.allOrders}
-            increase={`${ordersReports.newOrders}+ `}
-          />
-
-          <StatBox
-            title="Novos usuários"
-            subtitle="Usuários no ultimo mês"
-            icon={<PersonAddOutlinedIcon />}
-            progress={(100 * usersReport.newUsers) / usersReport.allUsers}
-            increase={`${usersReport.newUsers}+ `}
-          />
+          <Box className="w-[100%] xl:w-[400px]">
+            <StatBox
+              title="Novos pedidos"
+              subtitle="Pedidos no ultimo mês"
+              icon={<ShoppingCartOutlinedIcon />}
+              progress={
+                (100 * ordersReports.newOrders) / ordersReports.allOrders
+              }
+              increase={`${ordersReports.newOrders}+ `}
+            />
+          </Box>
+          <Box className="w-[100%] xl:w-[400px]">
+            <StatBox
+              title="Novos usuários"
+              subtitle="Usuários no ultimo mês"
+              icon={<PersonAddOutlinedIcon />}
+              progress={(100 * usersReport.newUsers) / usersReport.allUsers}
+              increase={`${usersReport.newUsers}+ `}
+            />
+          </Box>
         </Box>
-
-        <Box
-          color={colors.greenAccent[500]}
-          sx={{ backgroundColor: colors.primary[400] }}
-          className="flex mt-5 p-4 rounded-md  flex-wrap lg:flex-nowrap  "
-        >
-          <div className="lg:w-[450px]  w-100 h-[400px] ms-6">
+        <div className="flex flex-wrap lg:flex-nowrap items center justify-center">
+          <Box
+            className="text-center w-[100vw] lg:w-1/3 rounded-s-md"
+            color={colors.greenAccent[500]}
+            sx={{ backgroundColor: colors.primary[400] }}
+          >
             <Typography variant="h5">
               Quantidade de produtos vendidos no último mês
             </Typography>
             <BarChart title="Produtos" data={productsReport} />
-          </div>
-          <div className="lg:w-[450px]  w-100 h-[400px] ms-6">
+          </Box>
+
+          <Box
+            className="text-center  w-[100vw] lg:w-1/3  "
+            color={colors.greenAccent[500]}
+            sx={{ backgroundColor: colors.primary[400] }}
+          >
             <Typography variant="h5">
               Quantidade de vendas por usuário no último mês
             </Typography>
             <BarChart title="Pedidos por usuários" data={ordersByUserReport} />
-          </div>
-          <Box className="lg:w-[550px]  w-100 h-[400px] rounded-md ">
+          </Box>
+
+          <Box
+            color={colors.greenAccent[500]}
+            sx={{ backgroundColor: colors.primary[400] }}
+            className="text-center  w-[100vw] lg:w-1/3 rounded-e-md"
+          >
             <Header
               margin="0px"
               title="Pedidos"
@@ -150,7 +166,7 @@ const Home = () => {
               <OrdersBox orders={ordersReports.lastThreeOrders} />
             )}
           </Box>
-        </Box>
+        </div>
       </Box>
     </Box>
   );

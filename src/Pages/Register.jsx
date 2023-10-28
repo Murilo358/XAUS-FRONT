@@ -41,8 +41,8 @@ const Register = () => {
 
   useEffect(() => {
     const getAllRoles = async () => {
-      await fetch("http://localhost:8080/auth/allRoles").then(async (res) =>
-        setAllRoles(await res.json())
+      await fetch("https://xaus-backend.up.railway.app/auth/allRoles").then(
+        async (res) => setAllRoles(await res.json())
       );
     };
     getAllRoles();
@@ -59,7 +59,7 @@ const Register = () => {
   const onSubmit = async (data) => {
     data.birthDate = dayjs(new Date(data.birthDate)).format("YYYY-MM-DD");
 
-    await fetch("http://localhost:8080/auth/register", {
+    await fetch("https://xaus-backend.up.railway.app/auth/register", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${jwtToken}`,

@@ -10,7 +10,7 @@ const StatBox = ({ title, subtitle, icon, progress, increase }) => {
   return (
     <Box
       sx={{ backgroundColor: colors.primary[500] }}
-      className="p-3 rounded-md w-[300px] "
+      className="p-3 rounded-md w-100 "
       m="0 30px"
     >
       <Box display="flex" justifyContent="space-between">

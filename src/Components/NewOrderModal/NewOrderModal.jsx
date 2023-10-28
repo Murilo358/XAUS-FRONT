@@ -87,7 +87,7 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
       userId: userId,
     };
 
-    // await fetch("http://localhost:8080/orders/create", {
+    // await fetch("https://xaus-backend.up.railway.app/orders/create", {
     //   method: "POST",
     //   headers: {
     //     Authorization: `Bearer ${jwtToken}`,
@@ -124,10 +124,13 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
     }
 
     (async () => {
-      const allClients = await fetch("http://localhost:8080/clients/getall", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${jwtToken}` },
-      }).then(async (res) => {
+      const allClients = await fetch(
+        "https://xaus-backend.up.railway.app/clients/getall",
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${jwtToken}` },
+        }
+      ).then(async (res) => {
         if (res.ok) {
           const response = await res.json();
 

@@ -32,7 +32,7 @@ const Topbar = () => {
   };
 
   return (
-    <Box className="flex justify-between p-2 shadow-md">
+    <Box className="flex justify-between p-2 shadow-md w-full">
       <Box
         sx={{
           "&  MuiAutocomplete-endAdornment": {
@@ -105,12 +105,6 @@ const Topbar = () => {
         </IconButton>
         {authenticated && (
           <>
-            <IconButton>
-              <NotificationsOutlinedIcon />
-            </IconButton>
-            <IconButton>
-              <SettingsOutlinedIcon />
-            </IconButton>
             <IconButton onClick={() => handleMenuClick()}>
               <PersonOutlinedIcon />
             </IconButton>

@@ -18,9 +18,9 @@ const OrdersBox = ({ orders }) => {
             key={order.id}
           >
             <div className="flex justify-between lg:flex-nowrap flex-wrap">
-              <div>
-                <Typography color={colors.grey[100]}>
-                  Usuário: {order.userName}
+              <div className="flex flex-col">
+                <Typography sx={{ marginLeft: "-53px" }}>
+                  Usuario: {order.userName}
                 </Typography>
                 <Typography>Cliente: {order.clientName}</Typography>
               </div>
@@ -39,19 +39,18 @@ const OrdersBox = ({ orders }) => {
                 <Typography fontWeight="bold" variant="h5">
                   Produtos:
                 </Typography>
-
-                {order.products.map((product, index) => (
-                  <Box
-                    sx={{
-                      marginTop: "2px",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      maxWidth: "200px",
-                    }}
-                    key={product.productName}
-                  >
+                <Box
+                  sx={{
+                    marginTop: "2px",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "43vw",
+                  }}
+                >
+                  {order.products.map((product, index) => (
                     <Typography
+                      key={product.productName}
                       sx={{
                         marginLeft: "3px",
                       }}
@@ -60,8 +59,8 @@ const OrdersBox = ({ orders }) => {
                       {product.productName}
                       {index < order.products.length - 1 ? "," : ""}
                     </Typography>
-                  </Box>
-                ))}
+                  ))}
+                </Box>
               </div>
               <div className="flex">
                 <Typography fontWeight="bold" variant="h5">

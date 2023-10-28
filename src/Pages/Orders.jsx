@@ -79,7 +79,7 @@ const Orders = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:8080/orders/${orderId}/setPayed`,
+        `https://xaus-backend.up.railway.app/orders/${orderId}/setPayed`,
         {
           method: "POST",
           headers: {
@@ -107,6 +107,20 @@ const Orders = () => {
     }
   };
 
+  const [width, setWidth] = useState(window.innerWidth);
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowSizeChange);
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange);
+    };
+  }, []);
+
+  const isMobile = width <= 768;
+
   const processRowUpdate = async (newRow, oldRow) => {
     if (newRow.itsPayed === false) {
       toast.error(`O pedido não pode ser marcado como não pago`, {
@@ -130,16 +144,17 @@ const Orders = () => {
   };
 
   const columns = [
-    { field: "id", flex: 1, headerName: "ID" },
+    { field: "id", headerName: "ID", flex: isMobile ? 0 : 1 },
     {
       field: "clientCpf",
       headerName: "CPF-Cliente",
-      flex: 1,
+      flex: isMobile ? 0 : 1,
     },
     {
       field: "createdAt",
       headerName: "Criado em",
-      flex: 1,
+      flex: isMobile ? 0 : 1,
+
       renderCell: ({ row: { createdAt } }) => {
         return (
           <Box>
@@ -155,6 +170,7 @@ const Orders = () => {
 
     {
       field: "paymentMethod",
+      flex: isMobile ? 0 : 1,
       headerName: "Método pagamento",
       headerAlign: "center",
       align: "center",
@@ -172,12 +188,13 @@ const Orders = () => {
       headerAlign: "center",
       type: "boolean",
       editable: true,
+      flex: isMobile ? 0 : 1,
       align: "center",
     },
     {
       field: "products",
       headerName: "Produtos",
-      flex: 1,
+      flex: isMobile ? 0 : 1,
       headerAlign: "left",
       align: "left",
       renderCell: ({ row: { products } }) => {
@@ -196,6 +213,7 @@ const Orders = () => {
     {
       field: "orderPrice",
       headerName: "Total",
+      flex: isMobile ? 0 : 1,
       headerAlign: "left",
       align: "left",
       type: "number",
@@ -207,7 +225,7 @@ const Orders = () => {
 
   useEffect(() => {
     const getAllOrders = async () => {
-      await fetch("http://localhost:8080/orders/getall", {
+      await fetch("https://xaus-backend.up.railway.app/orders/getall", {
         method: "GET",
         headers: { Authorization: `Bearer ${jwtToken}` },
       }).then(async (res) => {
@@ -233,7 +251,7 @@ const Orders = () => {
       {permission ? (
         <DataGridBox>
           <DataGrid
-            className="lg:w-11/12"
+            className="w-full lg:w-11/12"
             editMode="row"
             initialState={{
               sorting: {

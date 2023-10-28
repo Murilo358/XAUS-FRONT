@@ -56,7 +56,7 @@ const Clients = () => {
   const deleteClient = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/clients/delete/${id}`,
+        `https://xaus-backend.up.railway.app/clients/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -79,7 +79,7 @@ const Clients = () => {
   const updateClients = async (newData) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/clients/update/${newData.id}`,
+        `https://xaus-backend.up.railway.app/clients/update/${newData.id}`,
         {
           method: "PUT",
           headers: {
@@ -110,7 +110,7 @@ const Clients = () => {
 
   useEffect(() => {
     const getAllOrders = async () => {
-      await fetch("http://localhost:8080/clients/getall", {
+      await fetch("https://xaus-backend.up.railway.app/clients/getall", {
         method: "GET",
         headers: { Authorization: `Bearer ${jwtToken}` },
       }).then(async (res) => {
@@ -194,14 +194,17 @@ const Clients = () => {
   const createClient = async (data) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8080/clients/create`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${jwtToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `https://xaus-backend.up.railway.app/clients/create`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
       setLoading(false);
 
       if (response.ok) {
@@ -384,12 +387,27 @@ const Clients = () => {
     return re.test(String(email).toLowerCase());
   }
 
+  const [width, setWidth] = useState(window.innerWidth);
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowSizeChange);
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange);
+    };
+  }, []);
+
+  const isMobile = width <= 768;
+
   const columns = [
-    { field: "id", flex: 1, headerName: "ID" },
+    { field: "id", headerName: "ID", flex: isMobile ? 0 : 1 },
     {
+      flex: isMobile ? 0 : 1,
       field: "createdAt",
       headerName: "Cadastrado em",
-      flex: 1,
+
       renderCell: ({ row: { createdAt } }) => {
         return (
           <Box>
@@ -403,39 +421,44 @@ const Clients = () => {
       },
     },
     {
+      flex: isMobile ? 0 : 1,
       field: "email",
-      flex: 1,
       headerName: "Email",
       editable: creationMode,
     },
     {
+      flex: isMobile ? 0 : 1,
       field: "name",
       headerName: "Nome",
       editable: true,
-      flex: 1,
       cellClassName: "name-column-cell",
     },
 
     {
+      flex: isMobile ? 0 : 1,
       field: "cpf",
       headerName: "CPF",
-      flex: 1,
+
       headerAlign: "left",
       editable: creationMode,
       align: "left",
       renderEditCell: renderCustomEditComponent,
     },
     {
+      flex: isMobile ? 0 : 1,
       field: "orders",
       headerName: "Pedidos",
       sortable: false,
       renderCell: ({ id }) => {
         const onClick = async (e) => {
           e.stopPropagation();
-          await fetch(`http://localhost:8080/orders/byclient/${id}`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${jwtToken}` },
-          }).then(async (res) => {
+          await fetch(
+            `https://xaus-backend.up.railway.app/orders/byclient/${id}`,
+            {
+              method: "GET",
+              headers: { Authorization: `Bearer ${jwtToken}` },
+            }
+          ).then(async (res) => {
             if (res.ok) {
               const response = await res.json();
               setModalOrders(response);
@@ -473,6 +496,7 @@ const Clients = () => {
       },
     },
     {
+      flex: isMobile ? 0 : 1,
       field: "actions",
       type: "actions",
       headerName: "Ações",
@@ -539,7 +563,7 @@ const Clients = () => {
               orders={modalOrders}
             />
             <DataGrid
-              className="lg:w-11/12 w-full"
+              className=" w-full"
               editMode="row"
               initialState={{
                 sorting: {
