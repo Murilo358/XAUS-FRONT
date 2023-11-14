@@ -111,7 +111,7 @@ const Topbar = () => {
             {openedMenu && (
               <Box
                 backgroundColor={colors.blueAccent[800]}
-                className="absolute z-20 top-14 right-1  w-[150px] shadow-md flex flex-col justify-center items-center rounded-lg"
+                className="absolute z-20 top-14  right-1  w-[150px] shadow-md flex flex-col justify-center items-center rounded-lg"
               >
                 <Button
                   className="w-full h-full"

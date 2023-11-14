@@ -29,7 +29,7 @@ const Home = () => {
 
   useMemo(() => {
     const getDashboardReports = async () => {
-      await fetch("https://xaus-backend.up.railway.app/reports/dashboard", {
+      await fetch("http://localhost:8080/reports/dashboard", {
         method: "GET",
         headers: { Authorization: `Bearer ${jwtToken}` },
       }).then(async (res) => {
@@ -94,9 +94,9 @@ const Home = () => {
       <Box className="flex flex-col justify-center items-center">
         <Box
           sx={{ backgroundColor: colors.primary[400] }}
-          className="flex p-4 rounded-md gap-10 md:w-auto flex-wrap xl:flex-nowrap "
+          className="flex p-4  rounded-t-md gap-10 md:w-auto flex-wrap xl:flex-nowrap "
         >
-          <Box className="w-[100%] xl:w-[400px]">
+          <Box className="w-[100%] xl:w-[421px]">
             <StatBox
               title="Novos clientes"
               subtitle="Clientes no ultimo mês"
@@ -129,39 +129,52 @@ const Home = () => {
             />
           </Box>
         </Box>
-        <div className="flex flex-wrap lg:flex-nowrap items center justify-center">
+        <div className="flex flex-wrap lg:flex-nowrap items center justify-center rounded-b-md shadow-lg ">
           <Box
-            className="text-center w-[100vw] lg:w-1/3 rounded-s-md"
+            className=" w-[100vw] lg:w-1/3  "
             color={colors.greenAccent[500]}
             sx={{ backgroundColor: colors.primary[400] }}
           >
-            <Typography variant="h5">
-              Quantidade de produtos vendidos no último mês
-            </Typography>
+            <Box className="flex justify-center text-center  ">
+              <Header
+                margin="4px"
+                title="Vendas por produto"
+                subtitle="Quantidade de produtos vendidos no último mês"
+              />
+            </Box>
+            <Typography variant="h5"></Typography>
             <BarChart title="Produtos" data={productsReport} />
           </Box>
 
           <Box
-            className="text-center  w-[100vw] lg:w-1/3  "
+            className=" w-[100vw] lg:w-1/3  "
             color={colors.greenAccent[500]}
             sx={{ backgroundColor: colors.primary[400] }}
           >
-            <Typography variant="h5">
-              Quantidade de vendas por usuário no último mês
-            </Typography>
+            <Box className="flex justify-center text-center  ">
+              <Header
+                margin="px"
+                title="Vendas por usuário"
+                subtitle="  Quantidade de vendas por usuário no último mês"
+              />
+            </Box>
+
             <BarChart title="Pedidos por usuários" data={ordersByUserReport} />
           </Box>
 
           <Box
             color={colors.greenAccent[500]}
             sx={{ backgroundColor: colors.primary[400] }}
-            className="text-center  w-[100vw] lg:w-1/3 rounded-e-md"
+            className="text-center  w-[100vw] lg:w-1/3 "
           >
-            <Header
-              margin="0px"
-              title="Pedidos"
-              subtitle="Último três pedidos do XAUS"
-            />
+            <Box className="flex justify-center text-center  ">
+              <Header
+                margin="0px"
+                title="Últimos pedidos"
+                subtitle="Último três pedidos do XAUS"
+              />
+            </Box>
+
             {ordersReports.lastThreeOrders && (
               <OrdersBox orders={ordersReports.lastThreeOrders} />
             )}

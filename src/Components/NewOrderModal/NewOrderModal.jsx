@@ -1,21 +1,14 @@
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../styles/Themes";
-import React from "react";
+
 import {
-  Autocomplete,
   Box,
   Button,
-  CircularProgress,
   FormControl,
-  FormControlLabel,
-  FormLabel,
   InputLabel,
   MenuItem,
   Modal,
-  Radio,
-  RadioGroup,
   Select,
-  TextField,
   Typography,
 } from "@mui/material";
 import { actions } from "../../Permissions/Constants";
@@ -24,13 +17,12 @@ import { DataGrid } from "@mui/x-data-grid";
 import UsePaymentMethods from "../../Hooks/UsePaymentMethods";
 import { formatPaymentMethods } from "../Utils";
 import { useForm } from "react-hook-form";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import AuthContext from "../../Contexts/AuthContext";
 import { hasPermission } from "../../Permissions/Permissions";
 import { useState } from "react";
-import { useEffect } from "react";
-import Swal from "sweetalert2";
-import InputMask from "react-input-mask";
+import ClientForm from "../ClientForm/ClientForm";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -58,15 +50,6 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
   //   [allValues]
   // );
 
-  const [open, setOpen] = React.useState(false);
-  const [options, setOptions] = React.useState([]);
-  const loading = open && options.length === 0;
-
-  const [value, setValue] = useState("existing");
-  const [clientSelected, setClientSelected] = useState();
-
-  const [clientId, setClientId] = useState(1);
-
   const {
     register,
     handleSubmit,
@@ -74,8 +57,25 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
     formState: { errors },
   } = useForm();
 
+  const [width, setWidth] = useState(window.innerWidth);
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowSizeChange);
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange);
+    };
+  }, []);
+
+  const isMobile = width <= 768;
+
+  const [clientId, setClientId] = useState(1);
+
   const onSubmit = async (data) => {
     const productsData = [];
+
     // eslint-disable-next-line react/prop-types
     products.forEach((product) => {
       productsData.push([product.id, parseInt(product.buying)]);
@@ -84,100 +84,53 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
     const formData = {
       paymentMethod: data.methods,
       products: productsData,
-      userId: userId,
+      userId,
+      clientId,
     };
 
-    // await fetch("https://xaus-backend.up.railway.app/orders/create", {
-    //   method: "POST",
-    //   headers: {
-    //     Authorization: `Bearer ${jwtToken}`,
-    //     "Content-type": "application/json",
-    //   },
-    //   body: JSON.stringify(formData),
-    // }).then(async (res) => {
-    //   console.log(res);
-    //   if (res.ok) {
-    //     toast.success("Pedido criado com sucesso!", {
-    //       position: toast.POSITION.TOP_RIGHT,
-    //     });
-    //     setOpenModal(false);
-    //     return;
-    //   } else if (res.status == 400) {
-    //     const response = await res.json();
-    //     setOpenModal(false);
-    //     toast.error(response.message, {
-    //       position: toast.POSITION.TOP_RIGHT,
-    //     });
-    //   }
-    // });
-  };
-
-  const onClientFormSubmit = (data) => {
-    console.log(data);
-  };
-
-  useEffect(() => {
-    let active = true;
-
-    if (!loading) {
-      return undefined;
-    }
-
-    (async () => {
-      const allClients = await fetch(
-        "https://xaus-backend.up.railway.app/clients/getall",
-        {
-          method: "GET",
-          headers: { Authorization: `Bearer ${jwtToken}` },
-        }
-      ).then(async (res) => {
-        if (res.ok) {
-          const response = await res.json();
-
-          return response;
-        }
-        Swal.fire({
-          background: colors.primary[400],
-          color: colors.grey[100],
-          icon: "error",
-          title: "Oops...",
-          text: "Erro ao buscar todos os clientes",
+    await fetch("http://localhost:8080/orders/create", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    }).then(async (res) => {
+      console.log(res);
+      if (res.ok) {
+        toast.success("Pedido criado com sucesso!", {
+          position: toast.POSITION.TOP_RIGHT,
         });
-      });
-
-      if (active) {
-        setOptions([...allClients.filter((client) => client.id !== 1)]);
+        setOpenModal(false);
+        return;
+      } else if (res.status == 400) {
+        const response = await res.json();
+        setOpenModal(false);
+        toast.error(response.message, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       }
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [loading]);
-
-  React.useEffect(() => {
-    if (!open) {
-      setOptions([]);
-    }
-  }, [open]);
+    });
+  };
 
   const columns = [
-    { field: "id", flex: 1, headerName: "ID" },
+    { field: "id", flex: isMobile ? 0 : 1, headerName: "ID" },
     {
       field: "name",
       headerName: "Nome",
-      flex: 1,
+      flex: isMobile ? 0 : 1,
       cellClassName: "name-column-cell",
     },
     {
       field: "description",
       headerName: "Descrição",
-      flex: 1,
+      flex: isMobile ? 0 : 1,
       headerAlign: "left",
       align: "left",
     },
     {
       field: "price",
+      flex: isMobile ? 0 : 1,
       headerName: "Valor",
       headerAlign: "center",
       align: "center",
@@ -194,7 +147,7 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
     {
       field: "quantity",
       headerName: "Quantidade disponivel",
-      flex: 1,
+      flex: isMobile ? 0 : 1,
       type: "number",
       headerAlign: "left",
       align: "left",
@@ -202,11 +155,13 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
 
     {
       field: "buying",
+      flex: isMobile ? 0 : 1,
       headerName: "Qtt a comprar",
       sortable: false,
     },
     {
       field: "totalProductPrice",
+      flex: isMobile ? 0 : 1,
       headerName: "Total",
       headerAlign: "center",
       align: "center",
@@ -232,10 +187,6 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
   products.forEach((product) => {
     totalPrice += product.price * product.buying;
   });
-
-  const handleChange = (event) => {
-    setValue(event.target.value);
-  };
 
   return (
     <Modal
@@ -308,162 +259,10 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
               },
             },
           }}
-        >
-          <form onSubmit={handleSubmit(onClientFormSubmit)}>
-            <FormControl>
-              <FormLabel id="demo-controlled-radio-buttons-group">
-                Cliente
-              </FormLabel>
-              <RadioGroup row value={value} onChange={handleChange}>
-                <FormControlLabel
-                  value="existing"
-                  control={
-                    <Radio
-                      sx={{
-                        color: colors.greenAccent[400],
-                        "&.Mui-checked": {
-                          color: colors.greenAccent[200],
-                        },
-                      }}
-                    />
-                  }
-                  label="Cliente cadastrado"
-                />
-
-                <FormControlLabel
-                  value="new"
-                  control={
-                    <Radio
-                      sx={{
-                        color: colors.greenAccent[400],
-                        "&.Mui-checked": {
-                          color: colors.greenAccent[200],
-                        },
-                      }}
-                    />
-                  }
-                  label="Novo cliente"
-                />
-                <FormControlLabel
-                  value="without"
-                  control={
-                    <Radio
-                      sx={{
-                        color: colors.greenAccent[400],
-                        "&.Mui-checked": {
-                          color: colors.greenAccent[200],
-                        },
-                      }}
-                    />
-                  }
-                  label="Sem cadastro"
-                />
-              </RadioGroup>
-              {value === "existing" && (
-                <Autocomplete
-                  sx={{ width: 350, mb: 1 }}
-                  open={open}
-                  value={clientSelected}
-                  onChange={(event, newValue) => {
-                    setClientSelected(newValue);
-                    setClientId(newValue.id);
-                  }}
-                  onOpen={() => {
-                    setOpen(true);
-                  }}
-                  onClose={() => {
-                    setOpen(false);
-                  }}
-                  isOptionEqualToValue={(option, value) =>
-                    option.name === value.name
-                  }
-                  getOptionLabel={(option) => option.name + " - " + option.cpf}
-                  options={options}
-                  loading={loading}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Clientes"
-                      InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                          <React.Fragment>
-                            {loading ? (
-                              <CircularProgress color="inherit" size={20} />
-                            ) : null}
-                            {params.InputProps.endAdornment}
-                          </React.Fragment>
-                        ),
-                      }}
-                    />
-                  )}
-                />
-              )}
-              {value === "new" && (
-                <>
-                  <Box className="flex w-100 gap-2">
-                    <TextField
-                      {...register("email", { required: true })}
-                      id="email"
-                      label="Email*"
-                      name="email"
-                      type={"email"}
-                      error={!!errors.email}
-                    />
-                    {errors?.email && (
-                      <p className="text-red-600">
-                        O campo e-mail é obrigatório
-                      </p>
-                    )}
-                    <FormControl variant="outlined">
-                      <InputMask
-                        {...register("cpf", { required: true })}
-                        mask="999.999.999-99"
-                      >
-                        {() => (
-                          <TextField
-                            id="cpf"
-                            label="CPF*"
-                            name="cpf"
-                            error={!!errors.cpf}
-                          />
-                        )}
-                      </InputMask>
-                      {errors?.cpf && (
-                        <p className="text-red-600">
-                          O campo CPF é obrigatório
-                        </p>
-                      )}
-                    </FormControl>
-                    <TextField
-                      {...register("name", { required: true })}
-                      id="name"
-                      label="Nome*"
-                      name="name"
-                      type={"name"}
-                      error={!!errors.name}
-                    />
-                    {errors?.name && (
-                      <p className="text-red-600">O campo nome é obrigatório</p>
-                    )}
-                  </Box>
-                  <button
-                    style={{
-                      backgroundColor: colors.greenAccent[400],
-                      color: colors.blueAccent[900],
-                    }}
-                    type="submit"
-                    className="p-4 mt-3 mb-4 rounded-sm "
-                  >
-                    Novo cliente
-                  </button>
-                </>
-              )}
-            </FormControl>
-          </form>
-        </Box>
+        ></Box>
+        <ClientForm clientId={clientId} setClientId={setClientId} />
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box className="flex justify-between">
+          <Box className="flex flex-wrap justify-between">
             <Box
               sx={{
                 "&  MuiAutocomplete-endAdornment": {
@@ -497,9 +296,7 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
               <FormControl>
                 <InputLabel id="methods-label">Método de pagamento*</InputLabel>
                 <Select
-                  sx={{
-                    width: 350,
-                  }}
+                  className="w-[220px] md:w-[300px] lg:w-[350px]"
                   {...register("methods", { required: true })}
                   labelId="methods-label"
                   id="methods"
@@ -532,26 +329,26 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
               </Typography>
             </Box>
           </Box>
+          {permission && (
+            <Button
+              type="submit"
+              sx={{
+                "&:hover": {
+                  color: colors.blueAccent[600],
+                  backgroundColor: colors.greenAccent[500],
+                },
+                padding: "10px",
+                width: "100%",
+                mt: "15px",
+                fontSize: "16px",
+                color: colors.blueAccent[900],
+                backgroundColor: colors.greenAccent[400],
+              }}
+            >
+              Gerar pedido
+            </Button>
+          )}
         </form>
-        {permission && (
-          <Button
-            type="submit"
-            sx={{
-              "&:hover": {
-                color: colors.blueAccent[600],
-                backgroundColor: colors.greenAccent[500],
-              },
-              padding: "10px",
-              width: "100%",
-              mt: "15px",
-              fontSize: "16px",
-              color: colors.blueAccent[900],
-              backgroundColor: colors.greenAccent[400],
-            }}
-          >
-            Gerar pedido
-          </Button>
-        )}
 
         <Button
           sx={{

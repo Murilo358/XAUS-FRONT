@@ -72,7 +72,7 @@ const Products = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://xaus-backend.up.railway.app/products/delete/${id}`,
+        `http://localhost:8080/products/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -103,17 +103,14 @@ const Products = () => {
   const createProduct = async (newData) => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `https://xaus-backend.up.railway.app/products/create`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newData),
-        }
-      );
+      const response = await fetch(`http://localhost:8080/products/create`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newData),
+      });
       setLoading(false);
       if (response.ok) {
         return response;
@@ -138,7 +135,7 @@ const Products = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://xaus-backend.up.railway.app/products/update/${newData.id}`,
+        `http://localhost:8080/products/update/${newData.id}`,
         {
           method: "PUT",
           headers: {
@@ -171,7 +168,7 @@ const Products = () => {
   useMemo(() => {
     const getAllProducts = async () => {
       setLoading(true);
-      await fetch("https://xaus-backend.up.railway.app/products/getAll", {
+      await fetch("http://localhost:8080/products/getAll", {
         method: "GET",
         headers: { Authorization: `Bearer ${jwtToken}` },
       }).then(async (res) => {

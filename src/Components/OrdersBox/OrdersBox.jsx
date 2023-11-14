@@ -25,13 +25,15 @@ const OrdersBox = ({ orders }) => {
                 <Typography>Cliente: {order.clientName}</Typography>
               </div>
               <Box
-                className="flex items-center justify-center rounded-sm"
+                className="flex rounded-sm shadow-md items-center justify-center rounded-sm"
                 sx={{
                   width: "80px",
                   backgroundColor: order.itsPayed ? "GREEN" : "RED",
                 }}
               >
-                <Typography>{order.itsPayed ? "PAGO" : "PENDENTE"} </Typography>
+                <Typography fontWeight="bold">
+                  {order.itsPayed ? "PAGO" : "PENDENTE"}{" "}
+                </Typography>
               </Box>
             </div>
             <div className="flex justify-between lg:flex-nowrap flex-wrap">
@@ -46,6 +48,7 @@ const OrdersBox = ({ orders }) => {
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     maxWidth: "43vw",
+                    width: "70%",
                   }}
                 >
                   {order.products.map((product, index) => (
@@ -62,7 +65,14 @@ const OrdersBox = ({ orders }) => {
                   ))}
                 </Box>
               </div>
-              <div className="flex">
+              <Box
+                sx={{
+                  marginTop: "2px",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
                 <Typography fontWeight="bold" variant="h5">
                   Valor total:
                 </Typography>
@@ -73,7 +83,7 @@ const OrdersBox = ({ orders }) => {
                 >
                   R${order.orderPrice}
                 </Typography>
-              </div>
+              </Box>
             </div>
           </Box>
         ))}

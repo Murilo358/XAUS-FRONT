@@ -51,7 +51,7 @@ const Login = ({ setLoginUpdated }) => {
   const HandleLogin = async (data) => {
     try {
       setLoading(true);
-      await fetch("https://xaus-backend.up.railway.app/auth/login", {
+      await fetch("http://localhost:8080/auth/login", {
         method: "POST",
         headers: {
           "Content-type": "application/json",

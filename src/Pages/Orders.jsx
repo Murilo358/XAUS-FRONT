@@ -11,7 +11,7 @@ import {
   GridToolbarDensitySelector,
   GridToolbarExport,
 } from "@mui/x-data-grid";
-import { Box, Button, LinearProgress, Typography } from "@mui/material";
+import { Box, Button, LinearProgress, Modal, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { formatPaymentMethods } from "../Components/Utils";
 import { useTheme } from "@emotion/react";
@@ -27,10 +27,25 @@ const Orders = () => {
   const [rows, setAllRows] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const navigate = useNavigate();
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const modalStyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
 
   function EditToolbar() {
     const handleRedirectClick = () => {
@@ -79,7 +94,7 @@ const Orders = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://xaus-backend.up.railway.app/orders/${orderId}/setPayed`,
+        `http://localhost:8080/orders/${orderId}/setPayed`,
         {
           method: "POST",
           headers: {
@@ -199,7 +214,16 @@ const Orders = () => {
       align: "left",
       renderCell: ({ row: { products } }) => {
         return (
-          <Typography variant="p">
+          <Typography onClick={() => handleOpen()} variant="p">
+            <Modal style={modalStyle} open={open} onClose={handleClose}>
+              <Box>
+                {products.map((product) => (
+                  <Typography key={product.name}>
+                    {product.productName}{" "}
+                  </Typography>
+                ))}
+              </Box>
+            </Modal>
             {products.map((product, index) => (
               <>
                 {product.productName}
@@ -225,7 +249,7 @@ const Orders = () => {
 
   useEffect(() => {
     const getAllOrders = async () => {
-      await fetch("https://xaus-backend.up.railway.app/orders/getall", {
+      await fetch("http://localhost:8080/orders/getall", {
         method: "GET",
         headers: { Authorization: `Bearer ${jwtToken}` },
       }).then(async (res) => {
@@ -255,7 +279,7 @@ const Orders = () => {
             editMode="row"
             initialState={{
               sorting: {
-                sortModel: [{ field: "id", sort: "asc" }],
+                sortModel: [{ field: "id", sort: "desc" }],
               },
             }}
             localeText={{
