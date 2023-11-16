@@ -88,14 +88,17 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
       clientId,
     };
 
-    await fetch("http://localhost:8080/orders/create", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    }).then(async (res) => {
+    await fetch(
+      "https://xaus-backend-production.up.railway.app/orders/create",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    ).then(async (res) => {
       console.log(res);
       if (res.ok) {
         toast.success("Pedido criado com sucesso!", {

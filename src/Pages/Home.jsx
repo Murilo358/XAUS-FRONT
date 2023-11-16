@@ -29,10 +29,13 @@ const Home = () => {
 
   useMemo(() => {
     const getDashboardReports = async () => {
-      await fetch("http://localhost:8080/reports/dashboard", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${jwtToken}` },
-      }).then(async (res) => {
+      await fetch(
+        "https://xaus-backend-production.up.railway.app/reports/dashboard",
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${jwtToken}` },
+        }
+      ).then(async (res) => {
         if (res.ok) {
           const response = await res.json();
 
@@ -82,7 +85,7 @@ const Home = () => {
         });
       });
     };
-    getDashboardReports();
+    getDashboardReports(); //
   }, []);
 
   return (

@@ -51,12 +51,10 @@ const Login = ({ setLoginUpdated }) => {
   const HandleLogin = async (data) => {
     try {
       setLoading(true);
-      await fetch("http://localhost:8080/auth/login", {
+      await fetch("https://xaus-backend-production.up.railway.app/auth/login", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
-          origin: "https://xaus-front.vercel.app/",
-          "Access-Control-Allow-Origin": "*",
         },
 
         body: JSON.stringify(data),

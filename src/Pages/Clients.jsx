@@ -56,7 +56,7 @@ const Clients = () => {
   const deleteClient = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/clients/delete/${id}`,
+        `https://xaus-backend-production.up.railway.app/clients/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -79,7 +79,7 @@ const Clients = () => {
   const updateClients = async (newData) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/clients/update/${newData.id}`,
+        `https://xaus-backend-production.up.railway.app/clients/update/${newData.id}`,
         {
           method: "PUT",
           headers: {
@@ -110,10 +110,13 @@ const Clients = () => {
 
   useEffect(() => {
     const getAllOrders = async () => {
-      await fetch("http://localhost:8080/clients/getall", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${jwtToken}` },
-      }).then(async (res) => {
+      await fetch(
+        "https://xaus-backend-production.up.railway.app/clients/getall",
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${jwtToken}` },
+        }
+      ).then(async (res) => {
         if (res.ok) {
           const response = await res.json();
           setRows(response);
@@ -194,14 +197,17 @@ const Clients = () => {
   const createClient = async (data) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8080/clients/create`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${jwtToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `https://xaus-backend-production.up.railway.app/clients/create`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
       setLoading(false);
 
       if (response.ok) {
@@ -449,10 +455,13 @@ const Clients = () => {
       renderCell: ({ id }) => {
         const onClick = async (e) => {
           e.stopPropagation();
-          await fetch(`http://localhost:8080/orders/byclient/${id}`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${jwtToken}` },
-          }).then(async (res) => {
+          await fetch(
+            `https://xaus-backend-production.up.railway.app/orders/byclient/${id}`,
+            {
+              method: "GET",
+              headers: { Authorization: `Bearer ${jwtToken}` },
+            }
+          ).then(async (res) => {
             if (res.ok) {
               const response = await res.json();
               setModalOrders(response);

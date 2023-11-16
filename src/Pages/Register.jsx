@@ -41,9 +41,9 @@ const Register = () => {
 
   useEffect(() => {
     const getAllRoles = async () => {
-      await fetch("http://localhost:8080/auth/allRoles").then(async (res) =>
-        setAllRoles(await res.json())
-      );
+      await fetch(
+        "https://xaus-backend-production.up.railway.app/auth/allRoles"
+      ).then(async (res) => setAllRoles(await res.json()));
     };
     getAllRoles();
   }, []);
@@ -59,15 +59,18 @@ const Register = () => {
   const onSubmit = async (data) => {
     data.birthDate = dayjs(new Date(data.birthDate)).format("YYYY-MM-DD");
 
-    await fetch("http://localhost:8080/auth/register", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-        "Content-type": "application/json",
-      },
+    await fetch(
+      "https://xaus-backend-production.up.railway.app/auth/register",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          "Content-type": "application/json",
+        },
 
-      body: JSON.stringify(data),
-    }).then(async (res) => {
+        body: JSON.stringify(data),
+      }
+    ).then(async (res) => {
       console.log(res);
       if (res.ok) {
         toast.success("Usuário criado com sucesso!", {
