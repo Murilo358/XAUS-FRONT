@@ -46,7 +46,7 @@ const Login = ({ setLoginUpdated }) => {
   useEffect(() => {
     const getAllRoles = async () => {
       await fetch(
-        "https://xaus-backend-production.up.railway.app/auth/allRoles"
+        "http://xaus-backend-production.up.railway.app/auth/allRoles"
       ).then(async (res) => console.log(await res.json()));
     };
     getAllRoles();
@@ -61,7 +61,7 @@ const Login = ({ setLoginUpdated }) => {
   const HandleLogin = async (data) => {
     try {
       setLoading(true);
-      await fetch("https://xaus-backend-production.up.railway.app/auth/login", {
+      await fetch("http://xaus-backend-production.up.railway.app/auth/login", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
