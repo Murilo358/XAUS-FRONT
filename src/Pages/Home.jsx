@@ -29,13 +29,10 @@ const Home = () => {
 
   useMemo(() => {
     const getDashboardReports = async () => {
-      await fetch(
-        "https://xaus-backend-production.up.railway.app/reports/dashboard",
-        {
-          method: "GET",
-          headers: { Authorization: `Bearer ${jwtToken}` },
-        }
-      ).then(async (res) => {
+      await fetch("http://3.15.239.137:8080/reports/dashboard", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      }).then(async (res) => {
         if (res.ok) {
           const response = await res.json();
 

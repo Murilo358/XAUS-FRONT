@@ -94,7 +94,7 @@ const Orders = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/orders/${orderId}/setPayed`,
+        `http://3.15.239.137:8080/orders/${orderId}/setPayed`,
         {
           method: "POST",
           headers: {
@@ -249,13 +249,10 @@ const Orders = () => {
 
   useEffect(() => {
     const getAllOrders = async () => {
-      await fetch(
-        "https://xaus-backend-production.up.railway.app/orders/getall",
-        {
-          method: "GET",
-          headers: { Authorization: `Bearer ${jwtToken}` },
-        }
-      ).then(async (res) => {
+      await fetch("http://3.15.239.137:8080/orders/getall", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      }).then(async (res) => {
         if (res.ok) {
           setAllRows(await res.json());
           return;

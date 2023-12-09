@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import Cookies from "universal-cookie";
 import jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
@@ -42,16 +42,6 @@ const Login = ({ setLoginUpdated }) => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  //Testing cors
-  useEffect(() => {
-    const getAllRoles = async () => {
-      await fetch(
-        "http://xaus-backend-production.up.railway.app/auth/allRoles"
-      ).then(async (res) => console.log(await res.json()));
-    };
-    getAllRoles();
-  }, []);
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
@@ -61,7 +51,7 @@ const Login = ({ setLoginUpdated }) => {
   const HandleLogin = async (data) => {
     try {
       setLoading(true);
-      await fetch("http://xaus-backend-production.up.railway.app/auth/login", {
+      await fetch("http://3.15.239.137:8080/auth/login", {
         method: "POST",
         headers: {
           "Content-type": "application/json",

@@ -17,16 +17,13 @@ export const AuthContextProvider = ({ children }) => {
     const cookies = new Cookies();
     const cookiesToken = cookies.get("Jwt_token");
     if (cookiesToken) {
-      const response = await fetch(
-        "https://xaus-backend-production.up.railway.app/auth/validate",
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: cookiesToken,
-        }
-      );
+      const response = await fetch("http://3.15.239.137:8080/auth/validate", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: cookiesToken,
+      });
 
       if (response.ok) {
         const res = await response.json();
