@@ -94,7 +94,7 @@ const Orders = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/auth/allRoles:8080/orders/${orderId}/setPayed`,
+        `https://xaus-backend-production.up.railway.app/orders/${orderId}/setPayed`,
         {
           method: "POST",
           headers: {
@@ -250,7 +250,7 @@ const Orders = () => {
   useEffect(() => {
     const getAllOrders = async () => {
       await fetch(
-        "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/orders/getall",
+        "https://xaus-backend-production.up.railway.app/orders/getall",
         {
           method: "GET",
           headers: { Authorization: `Bearer ${jwtToken}` },

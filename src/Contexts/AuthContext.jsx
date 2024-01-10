@@ -18,7 +18,7 @@ export const AuthContextProvider = ({ children }) => {
     const cookiesToken = cookies.get("Jwt_token");
     if (cookiesToken) {
       const response = await fetch(
-        "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/auth/validate",
+        "https://xaus-backend-production.up.railway.app/auth/validate",
         {
           method: "POST",
           headers: {

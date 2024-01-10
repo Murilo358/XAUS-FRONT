@@ -30,7 +30,7 @@ const Home = () => {
   useMemo(() => {
     const getDashboardReports = async () => {
       await fetch(
-        "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/reports/dashboard",
+        "https://xaus-backend-production.up.railway.app/reports/dashboard",
         {
           method: "GET",
           headers: { Authorization: `Bearer ${jwtToken}` },

@@ -89,7 +89,7 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
     };
 
     await fetch(
-      "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/orders/create",
+      "https://xaus-backend-production.up.railway.app/orders/create",
       {
         method: "POST",
         headers: {

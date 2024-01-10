@@ -56,7 +56,7 @@ const Clients = () => {
   const deleteClient = async (id) => {
     try {
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/auth/allRoles:8080/clients/delete/${id}`,
+        `https://xaus-backend-production.up.railway.app/clients/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -79,7 +79,7 @@ const Clients = () => {
   const updateClients = async (newData) => {
     try {
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/auth/allRoles:8080/clients/update/${newData.id}`,
+        `https://xaus-backend-production.up.railway.app/clients/update/${newData.id}`,
         {
           method: "PUT",
           headers: {
@@ -111,7 +111,7 @@ const Clients = () => {
   useEffect(() => {
     const getAllOrders = async () => {
       await fetch(
-        "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/clients/getall",
+        "https://xaus-backend-production.up.railway.app/clients/getall",
         {
           method: "GET",
           headers: { Authorization: `Bearer ${jwtToken}` },
@@ -198,7 +198,7 @@ const Clients = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/auth/allRoles:8080/clients/create`,
+        `https://xaus-backend-production.up.railway.app/clients/create`,
         {
           method: "POST",
           headers: {
@@ -456,7 +456,7 @@ const Clients = () => {
         const onClick = async (e) => {
           e.stopPropagation();
           await fetch(
-            `https://xaus-backend-production.up.railway.app/auth/allRoles:8080/orders/byclient/${id}`,
+            `https://xaus-backend-production.up.railway.app/orders/byclient/${id}`,
             {
               method: "GET",
               headers: { Authorization: `Bearer ${jwtToken}` },

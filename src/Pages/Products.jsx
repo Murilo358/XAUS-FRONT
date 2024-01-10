@@ -72,7 +72,7 @@ const Products = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/auth/allRoles:8080/products/delete/${id}`,
+        `https://xaus-backend-production.up.railway.app/products/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -104,7 +104,7 @@ const Products = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/auth/allRoles:8080/products/create`,
+        `https://xaus-backend-production.up.railway.app/products/create`,
         {
           method: "POST",
           headers: {
@@ -138,7 +138,7 @@ const Products = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/auth/allRoles:8080/products/update/${newData.id}`,
+        `https://xaus-backend-production.up.railway.app/products/update/${newData.id}`,
         {
           method: "PUT",
           headers: {
@@ -172,7 +172,7 @@ const Products = () => {
     const getAllProducts = async () => {
       setLoading(true);
       await fetch(
-        "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/products/getAll",
+        "https://xaus-backend-production.up.railway.app/products/getAll",
         {
           method: "GET",
           headers: { Authorization: `Bearer ${jwtToken}` },

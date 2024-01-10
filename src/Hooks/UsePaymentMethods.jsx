@@ -15,7 +15,7 @@ const UsePaymentMethods = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `https://xaus-backend-production.up.railway.app/auth/allRoles:8080/payments/getAll`,
+          `https://xaus-backend-production.up.railway.app/payments/getAll`,
           {
             method: "GET",
             headers: {

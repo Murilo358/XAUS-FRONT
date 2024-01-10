@@ -28,7 +28,7 @@ const ClientForm = ({ clientId, setClientId }) => {
 
   const onClientFormSubmit = async (data) => {
     const newClientId = await fetch(
-      "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/clients/create",
+      "https://xaus-backend-production.up.railway.app/clients/create",
       {
         method: "POST",
         headers: {
@@ -82,7 +82,7 @@ const ClientForm = ({ clientId, setClientId }) => {
 
     (async () => {
       const allClients = await fetch(
-        "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/clients/getall",
+        "https://xaus-backend-production.up.railway.app/clients/getall",
         {
           method: "GET",
           headers: { Authorization: `Bearer ${jwtToken}` },

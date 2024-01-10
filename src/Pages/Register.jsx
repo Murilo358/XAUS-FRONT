@@ -42,7 +42,7 @@ const Register = () => {
   useEffect(() => {
     const getAllRoles = async () => {
       await fetch(
-        "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/auth/allRoles"
+        "https://xaus-backend-production.up.railway.app/auth/allRoles"
       ).then(async (res) => setAllRoles(await res.json()));
     };
     getAllRoles();
@@ -60,7 +60,7 @@ const Register = () => {
     data.birthDate = dayjs(new Date(data.birthDate)).format("YYYY-MM-DD");
 
     await fetch(
-      "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/auth/register",
+      "https://xaus-backend-production.up.railway.app/auth/register",
       {
         method: "POST",
         headers: {
