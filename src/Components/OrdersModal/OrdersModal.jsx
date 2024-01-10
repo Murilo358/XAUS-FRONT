@@ -8,7 +8,7 @@ import Header from "../Header/Header";
 
 const style = {
   position: "absolute",
-  top: "70%",
+  top: "25%",
   left: "50%",
   transform: "translate(-50%, -50%)",
   border: "2px solid #000",
@@ -20,6 +20,7 @@ const style = {
 
 // eslint-disable-next-line react/prop-types
 const OrdersModal = ({ openModal, setOpenModal, orders }) => {
+  console.log(orders);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -45,7 +46,10 @@ const OrdersModal = ({ openModal, setOpenModal, orders }) => {
         }}
       >
         <Header
-          title="Todos os pedidos do cliente"
+          title={`Todos os pedidos do cliente ${
+            // eslint-disable-next-line react/prop-types
+            orders[0] ? ": " + orders[0].clientName : ""
+          }`}
           subtitle="Visualize todos os pedidos deste cliente"
         />
 
@@ -60,7 +64,7 @@ const OrdersModal = ({ openModal, setOpenModal, orders }) => {
         >
           <CloseIcon />
         </Button>
-        <OrdersBox orders={orders} />
+        <OrdersBox orders={orders} fullsize={true} />
       </Box>
     </Modal>
   );

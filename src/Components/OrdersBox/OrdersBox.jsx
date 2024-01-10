@@ -3,7 +3,7 @@ import { Box, Paper, Typography } from "@mui/material";
 
 import { tokens } from "../../styles/Themes";
 
-const OrdersBox = ({ orders }) => {
+const OrdersBox = ({ orders, fullsize }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
@@ -19,15 +19,22 @@ const OrdersBox = ({ orders }) => {
           >
             <div className="flex justify-between lg:flex-nowrap flex-wrap">
               <div className="flex flex-col">
-                <Typography sx={{ marginLeft: "-53px" }}>
-                  Usuario: {order.userName}
-                </Typography>
-                <Typography>Cliente: {order.clientName}</Typography>
+                <div>
+                  <Typography fontSize={15} className="flex ">
+                    Usuario: {order.userName}
+                  </Typography>
+                </div>
+                <div>
+                  <Typography fontSize={15} className="flex ">
+                    Cliente: {order.clientName}
+                  </Typography>
+                </div>
               </div>
               <Box
                 className="flex rounded-sm shadow-md items-center justify-center rounded-sm"
                 sx={{
                   width: "80px",
+                  height: "25px",
                   backgroundColor: order.itsPayed ? "GREEN" : "RED",
                 }}
               >
@@ -42,13 +49,15 @@ const OrdersBox = ({ orders }) => {
                   Produtos:
                 </Typography>
                 <Box
+                  className="flex flex-wrap md:flex-nowrap"
                   sx={{
+                    fontSize: "15px",
                     marginTop: "2px",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    maxWidth: "43vw",
-                    width: "70%",
+                    maxWidth: fullsize ? "100%" : "43vw",
+                    width: "100%",
                   }}
                 >
                   {order.products.map((product, index) => (

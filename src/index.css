@@ -45,7 +45,9 @@ body,
 
 @media (max-width: 600px) {
   .pro-sidebar.collapsed {
-    position: relative;
+    /*  position: relative; */
+    position: absolute;
+    visibility: hidden;
   }
   .pro-sidebar {
     position: absolute;
@@ -54,4 +56,10 @@ body,
 
 .css-1wjk1gj-MuiTable-root {
   min-width: unset !important;
+}
+
+@media (min-width: 600px) {
+  .mobile-menu-icon {
+    display: none !important;
+  }
 }

@@ -1,10 +1,10 @@
 const translateRoles = (role) => {
   switch (role) {
-    case "ADMIN":
+    case "ROLE_ADMIN":
       return "ADMIN";
-    case "PACKAGER":
+    case "ROLE_PACKAGER":
       return "EMPACOTADOR";
-    case "SALES":
+    case "ROLE_SALES":
       return "VENDEDOR";
     default:
       return "";

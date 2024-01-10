@@ -27,14 +27,17 @@ const ClientForm = ({ clientId, setClientId }) => {
   const [radiosDisabled, setRadioDisabled] = useState(false);
 
   const onClientFormSubmit = async (data) => {
-    const newClientId = await fetch("http://3.15.239.137:8080/clients/create", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${jwtToken}`,
-      },
-      body: JSON.stringify(data),
-    }).then(async (res) => {
+    const newClientId = await fetch(
+      "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/clients/create",
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${jwtToken}`,
+        },
+        body: JSON.stringify(data),
+      }
+    ).then(async (res) => {
       if (res.ok) {
         const response = await res.json();
         setRadioDisabled(true);
@@ -79,7 +82,7 @@ const ClientForm = ({ clientId, setClientId }) => {
 
     (async () => {
       const allClients = await fetch(
-        "http://3.15.239.137:8080/clients/getall",
+        "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/clients/getall",
         {
           method: "GET",
           headers: { Authorization: `Bearer ${jwtToken}` },

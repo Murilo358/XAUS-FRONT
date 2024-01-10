@@ -29,10 +29,13 @@ const Home = () => {
 
   useMemo(() => {
     const getDashboardReports = async () => {
-      await fetch("http://3.15.239.137:8080/reports/dashboard", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${jwtToken}` },
-      }).then(async (res) => {
+      await fetch(
+        "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/reports/dashboard",
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${jwtToken}` },
+        }
+      ).then(async (res) => {
         if (res.ok) {
           const response = await res.json();
 
@@ -129,9 +132,9 @@ const Home = () => {
             />
           </Box>
         </Box>
-        <div className="flex flex-wrap lg:flex-nowrap items center justify-center rounded-b-md shadow-lg ">
+        <div className="flex flex-wrap items center justify-center rounded-b-md shadow-lg  min-w-[69.5vw] w-full lg:max-w-[69.5vw] ">
           <Box
-            className=" w-[100vw] lg:w-1/3  "
+            className=" w-full  "
             color={colors.greenAccent[500]}
             sx={{ backgroundColor: colors.primary[400] }}
           >
@@ -147,7 +150,7 @@ const Home = () => {
           </Box>
 
           <Box
-            className=" w-[100vw] lg:w-1/3  "
+            className=" w-full  lg:w-1/2 "
             color={colors.greenAccent[500]}
             sx={{ backgroundColor: colors.primary[400] }}
           >
@@ -165,7 +168,7 @@ const Home = () => {
           <Box
             color={colors.greenAccent[500]}
             sx={{ backgroundColor: colors.primary[400] }}
-            className="text-center  w-[100vw] lg:w-1/3 "
+            className="text-center w-full  lg:w-1/2 "
           >
             <Box className="flex justify-center text-center  ">
               <Header

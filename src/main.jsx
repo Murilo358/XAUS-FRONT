@@ -8,16 +8,19 @@ import "react-toastify/dist/ReactToastify.css";
 import { AuthContextProvider } from "./Contexts/AuthContext";
 import ToastProvider from "./Contexts/ToastProvider.jsx";
 import { BrowserRouter } from "react-router-dom";
+import { SideBarContextProvider } from "./Contexts/SideBarContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ToastProvider>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <AuthContextProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </AuthContextProvider>
+        <SideBarContextProvider>
+          <AuthContextProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </AuthContextProvider>
+        </SideBarContextProvider>
       </LocalizationProvider>
     </ToastProvider>
   </React.StrictMode>

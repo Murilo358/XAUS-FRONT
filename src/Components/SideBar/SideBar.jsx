@@ -14,17 +14,23 @@ import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
 import { useEffect } from "react";
+import SideBarContext from "../../Contexts/SideBarContext";
 
 const SideBar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  // const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const { isCollapsed, setIsCollapsed } = useContext(SideBarContext);
   const { userName, roles } = useContext(AuthContext);
   const [width, setWidth] = useState(window.innerWidth);
 
   function getSize() {
     setWidth(window.innerWidth);
+  }
+
+  function setCollapsed() {
+    setIsCollapsed(!isCollapsed);
   }
 
   useEffect(() => {
@@ -59,7 +65,7 @@ const SideBar = () => {
         <Menu iconShape="square">
           <MenuItem
             active={false}
-            onClick={() => setIsCollapsed(!isCollapsed)}
+            onClick={() => setCollapsed()}
             icon={isCollapsed ? <MenuOutlinedIcon /> : null}
             style={{
               margin: "10px 0 20px 0",
@@ -77,7 +83,7 @@ const SideBar = () => {
                     Xaus
                   </Typography>
 
-                  <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                  <IconButton onClick={() => setCollapsed()}>
                     <MenuOpenOutlinedIcon />
                   </IconButton>
                 </Box>

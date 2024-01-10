@@ -94,7 +94,7 @@ const Orders = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://3.15.239.137:8080/orders/${orderId}/setPayed`,
+        `https://xaus-backend-production.up.railway.app/auth/allRoles:8080/orders/${orderId}/setPayed`,
         {
           method: "POST",
           headers: {
@@ -249,10 +249,13 @@ const Orders = () => {
 
   useEffect(() => {
     const getAllOrders = async () => {
-      await fetch("http://3.15.239.137:8080/orders/getall", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${jwtToken}` },
-      }).then(async (res) => {
+      await fetch(
+        "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/orders/getall",
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${jwtToken}` },
+        }
+      ).then(async (res) => {
         if (res.ok) {
           setAllRows(await res.json());
           return;
@@ -275,7 +278,7 @@ const Orders = () => {
       {permission ? (
         <DataGridBox>
           <DataGrid
-            className="w-full lg:w-11/12"
+            className="w-11/12 "
             editMode="row"
             initialState={{
               sorting: {

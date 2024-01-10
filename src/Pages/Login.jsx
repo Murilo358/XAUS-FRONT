@@ -51,14 +51,17 @@ const Login = ({ setLoginUpdated }) => {
   const HandleLogin = async (data) => {
     try {
       setLoading(true);
-      await fetch("http://3.15.239.137:8080/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
+      await fetch(
+        "https://xaus-backend-production.up.railway.app/auth/allRoles:8080/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
 
-        body: JSON.stringify(data),
-      }).then(async (res) => {
+          body: JSON.stringify(data),
+        }
+      ).then(async (res) => {
         if (res.ok) {
           const response = await res.json();
 
