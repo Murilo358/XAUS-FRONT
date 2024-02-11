@@ -8,8 +8,11 @@ import Header from "../Header/Header";
 
 const style = {
   position: "absolute",
-  top: "25%",
+  top: "40%",
   left: "50%",
+  overflow: "scroll",
+  maxHeight: "550px",
+  "overflow-x": "hidden",
   transform: "translate(-50%, -50%)",
   border: "2px solid #000",
   boxShadow: 24,
@@ -20,7 +23,6 @@ const style = {
 
 // eslint-disable-next-line react/prop-types
 const OrdersModal = ({ openModal, setOpenModal, orders }) => {
-  console.log(orders);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
