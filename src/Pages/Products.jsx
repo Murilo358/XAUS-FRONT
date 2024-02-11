@@ -18,6 +18,7 @@ import CancelIcon from "@mui/icons-material/Close";
 import { GridToolbarDensitySelector } from "@mui/x-data-grid";
 import { tokens } from "../styles/Themes";
 import ArticleIcon from "@mui/icons-material/Article";
+import { LiaSpinnerSolid } from "react-icons/lia";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -31,25 +32,13 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import NewOrderModal from "../Components/NewOrderModal/NewOrderModal";
 import DataGridBox from "../Components/DataGridBox/DataGridBox";
-import { useEffect } from "react";
+import UseIsMobile from "../Hooks/UseIsMobile";
 
 //APENAS ADMIN PODERÁ EDITAR, EXCLUIR E ETC
 const Products = () => {
   const { jwtToken, roles } = useContext(AuthContext);
 
-  const [width, setWidth] = useState(window.innerWidth);
-
-  function handleWindowSizeChange() {
-    setWidth(window.innerWidth);
-  }
-  useEffect(() => {
-    window.addEventListener("resize", handleWindowSizeChange);
-    return () => {
-      window.removeEventListener("resize", handleWindowSizeChange);
-    };
-  }, []);
-
-  const isMobile = width <= 768;
+  const { isMobile } = UseIsMobile();
 
   const viewPermission = hasPermission(roles, actions.VIEW_PRODUCTS);
   const editPermission = hasPermission(roles, actions.UPDATE_PRODUCTS);
@@ -72,7 +61,7 @@ const Products = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/products/delete/${id}`,
+        import.meta.env.VITE_PUBLIC_BACKEND_URL + `/products/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -104,7 +93,7 @@ const Products = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/products/create`,
+        import.meta.env.VITE_PUBLIC_BACKEND_URL + `/products/create`,
         {
           method: "POST",
           headers: {
@@ -138,7 +127,8 @@ const Products = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/products/update/${newData.id}`,
+        import.meta.env.VITE_PUBLIC_BACKEND_URL +
+          `/products/update/${newData.id}`,
         {
           method: "PUT",
           headers: {
@@ -172,7 +162,7 @@ const Products = () => {
     const getAllProducts = async () => {
       setLoading(true);
       await fetch(
-        "https://xaus-backend-production.up.railway.app/products/getAll",
+        import.meta.env.VITE_PUBLIC_BACKEND_URL + "/products/getAll",
         {
           method: "GET",
           headers: { Authorization: `Bearer ${jwtToken}` },
@@ -517,64 +507,72 @@ const Products = () => {
   ];
 
   return (
-    <Box>
+    <Box className="flex flex-col justify-center items-center text-center">
       <Header
         title="Produtos"
         subtitle="Visualize todos os produtos cadastrados"
       />
 
       {viewPermission ? (
-        <DataGridBox>
-          <NewOrderModal
-            openModal={openModal}
-            setOpenModal={setOpenModal}
-            products={selectedRows}
-          />
-          <DataGrid
-            className="w-11/12 "
-            editMode="row"
-            initialState={{
-              sorting: {
-                sortModel: [{ field: "id", sort: "asc" }],
-              },
-            }}
-            localeText={{
-              toolbarDensity: "Densidade da tabela",
-              toolbarExport: "Exportar",
-              toolbarExportCSV: "Baixar como CSV",
-              toolbarExportPrint: "Imprimir",
-              toolbarDensityCompact: "Compacto",
-              toolbarDensityStandard: "Padrão",
-              toolbarDensityComfortable: "Confortável",
-            }}
-            onRowSelectionModelChange={(newRowSelectionModel) => {
-              setRowSelectionModel(newRowSelectionModel);
-              const selectedRowsData = newRowSelectionModel.map((id) =>
-                rows.find((row) => row.id === id)
-              );
+        <>
+          {loading && (
+            <LiaSpinnerSolid className="animate-spin mt-20  w-[80px] h-[80px]" />
+          )}
+          {!loading && (
+            <DataGridBox>
+              <NewOrderModal
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                products={selectedRows}
+              />
+              <DataGrid
+                className="w-11/12 "
+                editMode="row"
+                initialState={{
+                  sorting: {
+                    sortModel: [{ field: "id", sort: "asc" }],
+                  },
+                }}
+                localeText={{
+                  toolbarDensity: "Densidade da tabela",
+                  toolbarExport: "Exportar",
+                  toolbarExportCSV: "Baixar como CSV",
+                  toolbarExportPrint: "Imprimir",
+                  toolbarDensityCompact: "Compacto",
+                  toolbarDensityStandard: "Padrão",
+                  toolbarDensityComfortable: "Confortável",
+                }}
+                onRowSelectionModelChange={(newRowSelectionModel) => {
+                  setRowSelectionModel(newRowSelectionModel);
+                  const selectedRowsData = newRowSelectionModel.map((id) =>
+                    rows.find((row) => row.id === id)
+                  );
 
-              setSelectedRows(selectedRowsData);
-            }}
-            disableRowSelectionOnClick
-            rowSelectionModel={rowSelectionModel}
-            checkboxSelection
-            onRowModesModelChange={handleRowModesModelChange}
-            onRowEditStop={handleRowEditStop}
-            processRowUpdate={processRowUpdate}
-            rowModesModel={rowModesModel}
-            slotProps={{
-              toolbar: { setRows, setRowModesModel },
-            }}
-            slots={{
-              toolbar: EditToolbar,
-              loadingOverlay: LinearProgress,
-            }}
-            loading={loading}
-            rows={rows}
-            columns={columns}
-          />
-        </DataGridBox>
+                  setSelectedRows(selectedRowsData);
+                }}
+                disableRowSelectionOnClick
+                rowSelectionModel={rowSelectionModel}
+                checkboxSelection
+                onRowModesModelChange={handleRowModesModelChange}
+                onRowEditStop={handleRowEditStop}
+                processRowUpdate={processRowUpdate}
+                rowModesModel={rowModesModel}
+                slotProps={{
+                  toolbar: { setRows, setRowModesModel },
+                }}
+                slots={{
+                  toolbar: EditToolbar,
+                  loadingOverlay: LinearProgress,
+                }}
+                loading={loading}
+                rows={rows}
+                columns={columns}
+              />
+            </DataGridBox>
+          )}
+        </>
       ) : (
+        //TODO: PUT THIS ON THE CENTER OF THE PAGE
         <p>Você não tem permissão para acessar essa página :( </p>
       )}
     </Box>

@@ -42,7 +42,7 @@ const Register = () => {
   useEffect(() => {
     const getAllRoles = async () => {
       await fetch(
-        "https://xaus-backend-production.up.railway.app/auth/allRoles"
+        import.meta.env.VITE_PUBLIC_BACKEND_URL + "/users/allRoles"
       ).then(async (res) => setAllRoles(await res.json()));
     };
     getAllRoles();
@@ -59,18 +59,15 @@ const Register = () => {
   const onSubmit = async (data) => {
     data.birthDate = dayjs(new Date(data.birthDate)).format("YYYY-MM-DD");
 
-    await fetch(
-      "https://xaus-backend-production.up.railway.app/auth/register",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${jwtToken}`,
-          "Content-type": "application/json",
-        },
+    await fetch(import.meta.env.VITE_PUBLIC_BACKEND_URL + "/auth/register", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-type": "application/json",
+      },
 
-        body: JSON.stringify(data),
-      }
-    ).then(async (res) => {
+      body: JSON.stringify(data),
+    }).then(async (res) => {
       console.log(res);
       if (res.ok) {
         toast.success("Usuário criado com sucesso!", {
@@ -89,7 +86,7 @@ const Register = () => {
   return (
     <>
       {permission ? (
-        <div className="flex flex-col ">
+        <div className="flex flex-col justify-center items-center text-center">
           <Header
             className="m-6"
             title="Registrar "
@@ -138,7 +135,7 @@ const Register = () => {
                 </FormControl>
                 <FormControl variant="outlined">
                   <InputLabel htmlFor="filled-adornment-password">
-                    Senha
+                    Senha *
                   </InputLabel>
                   <OutlinedInput
                     {...register("password", { required: true })}

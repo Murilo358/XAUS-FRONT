@@ -5,7 +5,14 @@ import { Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
-const SideBarItem = ({ title, to, icon, selected, setSelected }) => {
+const SideBarItem = ({
+  title,
+  to,
+  icon,
+  selected,
+  setSelected,
+  handleClick,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -13,6 +20,7 @@ const SideBarItem = ({ title, to, icon, selected, setSelected }) => {
     <div>
       <MenuItem
         icon={icon}
+        onClickCapture={() => handleClick()}
         style={{ color: colors.grey[100] }}
         onClick={() => setSelected(title)}
         active={selected === title}

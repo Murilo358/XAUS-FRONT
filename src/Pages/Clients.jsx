@@ -9,6 +9,8 @@ import Swal from "sweetalert2";
 import dayjs from "dayjs";
 import InputMask from "react-input-mask";
 import Header from "../Components/Header/Header";
+import LinearProgress from "@mui/material/LinearProgress";
+import { LiaSpinnerSolid } from "react-icons/lia";
 import {
   Box,
   Button,
@@ -35,6 +37,7 @@ import CancelIcon from "@mui/icons-material/Close";
 import { tokens } from "../styles/Themes";
 import OrdersModal from "../Components/OrdersModal/OrdersModal";
 import DataGridBox from "../Components/DataGridBox/DataGridBox";
+import UseIsMobile from "../Hooks/UseIsMobile";
 
 const Clients = () => {
   const theme = useTheme();
@@ -56,7 +59,7 @@ const Clients = () => {
   const deleteClient = async (id) => {
     try {
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/clients/delete/${id}`,
+        import.meta.env.VITE_PUBLIC_BACKEND_URL + `/clients/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -79,7 +82,8 @@ const Clients = () => {
   const updateClients = async (newData) => {
     try {
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/clients/update/${newData.id}`,
+        import.meta.env.VITE_PUBLIC_BACKEND_URL +
+          `/clients/update/${newData.id}`,
         {
           method: "PUT",
           headers: {
@@ -110,13 +114,11 @@ const Clients = () => {
 
   useEffect(() => {
     const getAllOrders = async () => {
-      await fetch(
-        "https://xaus-backend-production.up.railway.app/clients/getall",
-        {
-          method: "GET",
-          headers: { Authorization: `Bearer ${jwtToken}` },
-        }
-      ).then(async (res) => {
+      setLoading(true);
+      await fetch(import.meta.env.VITE_PUBLIC_BACKEND_URL + "/clients/getall", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      }).then(async (res) => {
         if (res.ok) {
           const response = await res.json();
           setRows(response);
@@ -130,6 +132,7 @@ const Clients = () => {
           text: "Erro ao buscar todos os clientes",
         });
       });
+      setLoading(false);
     };
     getAllOrders();
   }, []);
@@ -198,7 +201,7 @@ const Clients = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/clients/create`,
+        import.meta.env.VITE_PUBLIC_BACKEND_URL + `/clients/create`,
         {
           method: "POST",
           headers: {
@@ -287,7 +290,6 @@ const Clients = () => {
   };
 
   const processRowUpdate = async (newRow, oldRow) => {
-    console.log(newRow, oldRow);
     if (newRow.name === "" || newRow.name === null || newRow.cpf === "") {
       Swal.fire({
         background: colors.primary[400],
@@ -384,25 +386,12 @@ const Clients = () => {
   };
 
   function validateEmail(email) {
-    console.log(email);
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
   }
 
-  const [width, setWidth] = useState(window.innerWidth);
-
-  function handleWindowSizeChange() {
-    setWidth(window.innerWidth);
-  }
-  useEffect(() => {
-    window.addEventListener("resize", handleWindowSizeChange);
-    return () => {
-      window.removeEventListener("resize", handleWindowSizeChange);
-    };
-  }, []);
-
-  const isMobile = width <= 768;
+  const { isMobile } = UseIsMobile();
 
   const columns = [
     { field: "id", headerName: "ID", flex: isMobile ? 0 : 1 },
@@ -456,7 +445,7 @@ const Clients = () => {
         const onClick = async (e) => {
           e.stopPropagation();
           await fetch(
-            `https://xaus-backend-production.up.railway.app/orders/byclient/${id}`,
+            import.meta.env.VITE_PUBLIC_BACKEND_URL + `/orders/byclient/${id}`,
             {
               method: "GET",
               headers: { Authorization: `Bearer ${jwtToken}` },
@@ -551,52 +540,58 @@ const Clients = () => {
   ];
 
   return (
-    <div>
+    <div className="flex flex-col justify-center items-center text-center">
       {permissions ? (
         <>
           <Header
             className="m-6"
             title="Clientes "
             subtitle="Visuzalize todos os clientes cadastrados"
-          />
-          <DataGridBox>
-            <OrdersModal
-              openModal={openModal}
-              setOpenModal={setOpenModal}
-              orders={modalOrders}
-            />
-            <DataGrid
-              className="w-11/12 "
-              editMode="row"
-              initialState={{
-                sorting: {
-                  sortModel: [{ field: "id", sort: "asc" }],
-                },
-              }}
-              localeText={{
-                toolbarDensity: "Densidade da tabela",
-                toolbarExport: "Exportar",
-                toolbarExportCSV: "Baixar como CSV",
-                toolbarExportPrint: "Imprimir",
-                toolbarDensityCompact: "Compacto",
-                toolbarDensityStandard: "Padrão",
-                toolbarDensityComfortable: "Confortável",
-              }}
-              onRowModesModelChange={handleRowModesModelChange}
-              onRowEditStop={handleRowEditStop}
-              processRowUpdate={processRowUpdate}
-              rowModesModel={rowModesModel}
-              slotProps={{
-                toolbar: { setRows, setRowModesModel },
-              }}
-              slots={{
-                toolbar: EditToolbar,
-              }}
-              rows={rows}
-              columns={columns}
-              loading={loading}
-            />
-          </DataGridBox>
+          />{" "}
+          {loading && (
+            <LiaSpinnerSolid className="animate-spin mt-20  w-[80px] h-[80px]" />
+          )}
+          {!loading && (
+            <DataGridBox>
+              <OrdersModal
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                orders={modalOrders}
+              />
+              <DataGrid
+                className="w-11/12 "
+                editMode="row"
+                initialState={{
+                  sorting: {
+                    sortModel: [{ field: "id", sort: "asc" }],
+                  },
+                }}
+                localeText={{
+                  toolbarDensity: "Densidade da tabela",
+                  toolbarExport: "Exportar",
+                  toolbarExportCSV: "Baixar como CSV",
+                  toolbarExportPrint: "Imprimir",
+                  toolbarDensityCompact: "Compacto",
+                  toolbarDensityStandard: "Padrão",
+                  toolbarDensityComfortable: "Confortável",
+                }}
+                onRowModesModelChange={handleRowModesModelChange}
+                onRowEditStop={handleRowEditStop}
+                processRowUpdate={processRowUpdate}
+                rowModesModel={rowModesModel}
+                slotProps={{
+                  toolbar: { setRows, setRowModesModel },
+                }}
+                slots={{
+                  toolbar: EditToolbar,
+                  loadingOverlay: LinearProgress,
+                }}
+                rows={rows}
+                columns={columns}
+                loading={loading}
+              />
+            </DataGridBox>
+          )}
         </>
       ) : (
         <p>Você não tem permissão :( </p>
