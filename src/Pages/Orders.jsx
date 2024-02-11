@@ -5,13 +5,16 @@ import { actions } from "../Permissions/Constants";
 import Swal from "sweetalert2";
 import Header from "../Components/Header/Header";
 import ArticleIcon from "@mui/icons-material/Article";
+import { LiaSpinnerSolid } from "react-icons/lia";
+import LinearProgress from "@mui/material/LinearProgress";
 import {
   DataGrid,
   GridToolbarContainer,
   GridToolbarDensitySelector,
   GridToolbarExport,
+  useGridApiRef,
 } from "@mui/x-data-grid";
-import { Box, Button, LinearProgress, Modal, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { formatPaymentMethods } from "../Components/Utils";
 import { useTheme } from "@emotion/react";
@@ -19,6 +22,8 @@ import { tokens } from "../styles/Themes";
 import { toast } from "react-toastify";
 import DataGridBox from "../Components/DataGridBox/DataGridBox";
 import { useNavigate } from "react-router-dom";
+import ProductsModal from "../Components/ProductModal/ProductsModal";
+import UseIsMobile from "../Hooks/UseIsMobile";
 
 const Orders = () => {
   const { jwtToken, roles } = useContext(AuthContext);
@@ -26,26 +31,18 @@ const Orders = () => {
   const createOrderPermission = hasPermission(roles, actions.CREATE_ORDER);
   const [rows, setAllRows] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [modalProducts, setModalProducts] = useState([]);
+  const apiRef = useGridApiRef();
+  //Used in products modal
+  const [totalOrderPrice, setTotalOrderPrice] = useState(0);
+  const [orderPackaged, setOrderPackaged] = useState(false);
+  const [orderId, setOrderId] = useState(false);
 
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const navigate = useNavigate();
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-  const modalStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
 
   function EditToolbar() {
     const handleRedirectClick = () => {
@@ -90,11 +87,47 @@ const Orders = () => {
     );
   }
 
+  const handleSetPackaged = async (orderId, packaged) => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        import.meta.env.VITE_PUBLIC_BACKEND_URL +
+          `/orders/${orderId}/setPackaged`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+          body: JSON.stringify(packaged),
+        }
+      );
+      setLoading(false);
+      if (response.ok) {
+        handleRowUpdate(orderId, packaged);
+        return response;
+      } else {
+        throw new Error("Erro atualizar o pedido");
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        background: colors.primary[400],
+        color: colors.grey[100],
+        icon: "error",
+        title: "Oops...",
+        text: error.message,
+      });
+      setLoading(false);
+      return null;
+    }
+  };
+
   const handleSetPayed = async (orderId) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://xaus-backend-production.up.railway.app/orders/${orderId}/setPayed`,
+        import.meta.env.VITE_PUBLIC_BACKEND_URL + `/orders/${orderId}/setPayed`,
         {
           method: "POST",
           headers: {
@@ -121,23 +154,25 @@ const Orders = () => {
       return null;
     }
   };
+  const handleRowUpdate = (orderId, packaged) => {
+    setAllRows((prevRows) => {
+      return prevRows.map((row) => {
+        row.id === orderId ? { ...row, packaged: packaged } : row;
+      });
+    });
+  };
 
-  const [width, setWidth] = useState(window.innerWidth);
-
-  function handleWindowSizeChange() {
-    setWidth(window.innerWidth);
-  }
-  useEffect(() => {
-    window.addEventListener("resize", handleWindowSizeChange);
-    return () => {
-      window.removeEventListener("resize", handleWindowSizeChange);
-    };
-  }, []);
-
-  const isMobile = width <= 768;
-
+  const { isMobile } = UseIsMobile();
   const processRowUpdate = async (newRow, oldRow) => {
-    if (newRow.itsPayed === false) {
+    let updated = false;
+
+    if (oldRow.itsPackaged !== newRow.itsPackaged) {
+      const res = await handleSetPackaged(newRow.id, newRow.itsPackaged);
+      if (res.ok) {
+        updated = true;
+      }
+    }
+    if (newRow.itsPayed === false && updated === false) {
       toast.error(`O pedido não pode ser marcado como não pago`, {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -146,9 +181,24 @@ const Orders = () => {
       setAllRows(rows.map((row) => (row.id === oldRow.id ? updatedRow : row)));
       return updatedRow;
     }
-    const res = await handleSetPayed(newRow.id);
+    // if (newRow.itsPackaged === false) {
+    //   toast.error(`O pedido não pode ser marcado como não empacotado`, {
+    //     position: toast.POSITION.TOP_RIGHT,
+    //   });
 
-    if (res.ok) {
+    //   const updatedRow = { ...oldRow, isNew: false };
+    //   setAllRows(rows.map((row) => (row.id === oldRow.id ? updatedRow : row)));
+    //   return updatedRow;
+    // }
+
+    if (oldRow.itsPayed !== newRow.itsPayed) {
+      const res = await handleSetPayed(newRow.id);
+      if (res.ok) {
+        updated = true;
+      }
+    }
+
+    if (updated) {
       toast.success(`Pedido atualizado com sucesso!`, {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -158,8 +208,12 @@ const Orders = () => {
     }
   };
 
+  const handleRowClick = (product) => {
+    console.log(product);
+  };
+
   const columns = [
-    { field: "id", headerName: "ID", flex: isMobile ? 0 : 1 },
+    { field: "userName", headerName: "Vendedor", flex: isMobile ? 0 : 1 },
     {
       field: "clientCpf",
       headerName: "CPF-Cliente",
@@ -199,7 +253,16 @@ const Orders = () => {
     },
     {
       field: "itsPayed",
-      headerName: "Pago?",
+      headerName: "Pago",
+      headerAlign: "center",
+      type: "boolean",
+      editable: true,
+      flex: isMobile ? 0 : 1,
+      align: "center",
+    },
+    {
+      field: "itsPackaged",
+      headerName: "Empacotado",
       headerAlign: "center",
       type: "boolean",
       editable: true,
@@ -210,30 +273,41 @@ const Orders = () => {
       field: "products",
       headerName: "Produtos",
       flex: isMobile ? 0 : 1,
-      headerAlign: "left",
-      align: "left",
-      renderCell: ({ row: { products } }) => {
+      headerAlign: "center",
+      onclick: (product) => handleRowClick(product),
+      align: "center",
+      renderCell: ({ row: { id, products, orderPrice, itsPackaged } }) => {
         return (
-          <Typography onClick={() => handleOpen()} variant="p">
-            <Modal style={modalStyle} open={open} onClose={handleClose}>
-              <Box>
-                {products.map((product) => (
-                  <Typography key={product.name}>
-                    {product.productName}{" "}
-                  </Typography>
-                ))}
-              </Box>
-            </Modal>
-            {products.map((product, index) => (
-              <>
-                {product.productName}
-                {index < products.length - 1 ? "," : ""}
-              </>
-            ))}
-          </Typography>
+          <Box>
+            <Button
+              style={{
+                backgroundColor: colors.greenAccent[500],
+              }}
+              type="submit"
+              className="p-4  "
+              onClick={() => {
+                setOrderId(id);
+                setOrderPackaged(itsPackaged);
+                setTotalOrderPrice(orderPrice);
+                setModalProducts(products);
+                setOpen(true);
+              }}
+            >
+              Ver produtos
+            </Button>
+            {/* <Typography variant="p" sx={{ color: colors.grey[100] }}>
+              {products.map((product, index) => (
+                <>
+                  {product.productName}
+                  {index < products.length - 1 ? "," : ""}
+                </>
+              ))}
+            </Typography> */}
+          </Box>
         );
       },
     },
+
     {
       field: "orderPrice",
       headerName: "Total",
@@ -249,13 +323,11 @@ const Orders = () => {
 
   useEffect(() => {
     const getAllOrders = async () => {
-      await fetch(
-        "https://xaus-backend-production.up.railway.app/orders/getall",
-        {
-          method: "GET",
-          headers: { Authorization: `Bearer ${jwtToken}` },
-        }
-      ).then(async (res) => {
+      setLoading(true);
+      await fetch(import.meta.env.VITE_PUBLIC_BACKEND_URL + "/orders/getall", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      }).then(async (res) => {
         if (res.ok) {
           setAllRows(await res.json());
           return;
@@ -268,42 +340,64 @@ const Orders = () => {
           text: "Erro ao buscar todos os pedidos",
         });
       });
+      setLoading(false);
     };
     getAllOrders();
   }, []);
 
+  console.log(rows);
   return (
-    <Box sx={{ mb: "40px" }}>
+    <Box
+      className="flex flex-col justify-center items-center text-center"
+      sx={{ mb: "40px" }}
+    >
       <Header title="Pedidos" subtitle="Veja todos os pedidos do XAUS" />
+      <ProductsModal
+        orderId={orderId}
+        handleSetPackaged={handleSetPackaged}
+        orderPackaged={orderPackaged}
+        totalOrderPrice={totalOrderPrice}
+        openModal={open}
+        setOpenModal={setOpen}
+        products={modalProducts}
+      />
+
       {permission ? (
-        <DataGridBox>
-          <DataGrid
-            className="w-11/12 "
-            editMode="row"
-            initialState={{
-              sorting: {
-                sortModel: [{ field: "id", sort: "desc" }],
-              },
-            }}
-            localeText={{
-              toolbarDensity: "Densidade da tabela",
-              toolbarExport: "Exportar",
-              toolbarExportCSV: "Baixar como CSV",
-              toolbarExportPrint: "Imprimir",
-              toolbarDensityCompact: "Compacto",
-              toolbarDensityStandard: "Padrão",
-              toolbarDensityComfortable: "Confortável",
-            }}
-            slots={{
-              toolbar: EditToolbar,
-              loadingOverlay: LinearProgress,
-            }}
-            processRowUpdate={processRowUpdate}
-            loading={loading}
-            rows={rows}
-            columns={columns}
-          />
-        </DataGridBox>
+        <>
+          {loading && (
+            <LiaSpinnerSolid className="animate-spin mt-20  w-[80px] h-[80px]" />
+          )}
+          {!loading && (
+            <DataGridBox>
+              <DataGrid
+                className="w-11/12 "
+                editMode="row"
+                initialState={{
+                  sorting: {
+                    sortModel: [{ field: "id", sort: "desc" }],
+                  },
+                }}
+                localeText={{
+                  toolbarDensity: "Densidade da tabela",
+                  toolbarExport: "Exportar",
+                  toolbarExportCSV: "Baixar como CSV",
+                  toolbarExportPrint: "Imprimir",
+                  toolbarDensityCompact: "Compacto",
+                  toolbarDensityStandard: "Padrão",
+                  toolbarDensityComfortable: "Confortável",
+                }}
+                slots={{
+                  toolbar: EditToolbar,
+                  loadingOverlay: LinearProgress,
+                }}
+                processRowUpdate={processRowUpdate}
+                loading={loading}
+                rows={rows}
+                columns={columns}
+              />
+            </DataGridBox>
+          )}
+        </>
       ) : (
         <p>Você não tem permissão para visualizar essa página </p>
       )}

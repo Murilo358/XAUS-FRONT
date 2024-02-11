@@ -18,7 +18,7 @@ export const AuthContextProvider = ({ children }) => {
     const cookiesToken = cookies.get("Jwt_token");
     if (cookiesToken) {
       const response = await fetch(
-        "https://xaus-backend-production.up.railway.app/auth/validate",
+        import.meta.env.VITE_PUBLIC_BACKEND_URL + "/auth/validate",
         {
           method: "POST",
           headers: {

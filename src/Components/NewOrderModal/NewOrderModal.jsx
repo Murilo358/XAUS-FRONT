@@ -23,6 +23,7 @@ import { hasPermission } from "../../Permissions/Permissions";
 import { useState } from "react";
 import ClientForm from "../ClientForm/ClientForm";
 import { toast } from "react-toastify";
+import UseIsMobile from "../../Hooks/UseIsMobile";
 
 const style = {
   position: "absolute",
@@ -57,19 +58,7 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
     formState: { errors },
   } = useForm();
 
-  const [width, setWidth] = useState(window.innerWidth);
-
-  function handleWindowSizeChange() {
-    setWidth(window.innerWidth);
-  }
-  useEffect(() => {
-    window.addEventListener("resize", handleWindowSizeChange);
-    return () => {
-      window.removeEventListener("resize", handleWindowSizeChange);
-    };
-  }, []);
-
-  const isMobile = width <= 768;
+  const { isMobile } = UseIsMobile();
 
   const [clientId, setClientId] = useState(1);
 
@@ -88,17 +77,13 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
       clientId,
     };
 
-    await fetch(
-      "https://xaus-backend-production.up.railway.app/orders/create",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${jwtToken}`,
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      }
-    ).then(async (res) => {
+    await fetch(import.meta.env.VITE_PUBLIC_BACKEND_URL + "/orders/create", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      body: JSON.stringify(formData),
+    }).then(async (res) => {
       console.log(res);
       if (res.ok) {
         toast.success("Pedido criado com sucesso!", {

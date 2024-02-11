@@ -33,6 +33,12 @@ const SideBar = () => {
     setIsCollapsed(!isCollapsed);
   }
 
+  function handleClick() {
+    if (width < 600) {
+      setIsCollapsed(true);
+    }
+  }
+
   useEffect(() => {
     window.addEventListener("resize", getSize);
 
@@ -97,7 +103,7 @@ const SideBar = () => {
                     className="cursor-pointer rounded-md"
                     width="100px"
                     height="100px"
-                    src="/Xaus-icon.png"
+                    src={import.meta.env.VITE_PUBLIC_XAUS_LOGO}
                     alt="XAUS-Logo"
                   />
                 </Box>
@@ -132,6 +138,7 @@ const SideBar = () => {
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             <SideBarItem
               title="Dashboard"
+              handleClick={handleClick}
               to="/"
               icon={<HomeOutlinedIcon />}
               selected={selected}
@@ -143,6 +150,7 @@ const SideBar = () => {
             </Typography> */}
             <SideBarItem
               title="Produtos"
+              handleClick={handleClick}
               to="/products"
               icon={<ShoppingCartOutlinedIcon />}
               selected={selected}
@@ -153,6 +161,7 @@ const SideBar = () => {
             </Typography> */}
             <SideBarItem
               title="Registrar"
+              handleClick={handleClick}
               to="/register"
               icon={<PersonAddOutlinedIcon />}
               selected={selected}
@@ -165,6 +174,7 @@ const SideBar = () => {
             <SideBarItem
               title="Pedidos"
               to="/orders"
+              handleClick={handleClick}
               icon={<PointOfSaleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -172,6 +182,7 @@ const SideBar = () => {
             <SideBarItem
               title="Clientes"
               to="/clients"
+              handleClick={handleClick}
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

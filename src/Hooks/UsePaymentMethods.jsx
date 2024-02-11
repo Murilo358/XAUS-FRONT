@@ -15,7 +15,7 @@ const UsePaymentMethods = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `https://xaus-backend-production.up.railway.app/payments/getAll`,
+          import.meta.env.VITE_PUBLIC_BACKEND_URL + `/payments/getAll`,
           {
             method: "GET",
             headers: {
