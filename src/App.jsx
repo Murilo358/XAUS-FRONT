@@ -8,10 +8,12 @@ import { useContext, useEffect } from "react";
 import Register from "./Pages/Register";
 import Products from "./Pages/Products";
 import Orders from "./Pages/Orders";
-import Topbar from "./Components/Topbar";
+import Topbar from "./Components/TopBar/Topbar";
 import SideBar from "./Components/SideBar/SideBar";
 import { useState } from "react";
 import Clients from "./Pages/Clients";
+import PasswordRecover from "./Pages/PasswordRecover";
+import PasswordEmailSender from "./Pages/PasswordEmailSender";
 
 function App() {
   const { validateToken, loading, authenticated } = useContext(AuthContext);
@@ -30,7 +32,7 @@ function App() {
     <colorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-
+        {/* <NotificationButton /> */}
         <div className="app">
           {authenticated && !loading && <SideBar />}
           <main className="content">
@@ -110,6 +112,14 @@ function App() {
                 <Route
                   path="/Login"
                   element={<Login setLoginUpdated={setLoginUpdated} />}
+                />
+                <Route
+                  path="/password-recover/:token"
+                  element={<PasswordRecover />}
+                />
+                <Route
+                  path="/password-recover-send"
+                  element={<PasswordEmailSender />}
                 />
               </Routes>
             </Box>

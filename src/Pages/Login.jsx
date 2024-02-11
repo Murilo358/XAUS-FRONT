@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import Cookies from "universal-cookie";
 import jwtDecode from "jwt-decode";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../Contexts/AuthContext";
 import { toast } from "react-toastify";
 import { useTheme } from "@emotion/react";
@@ -51,7 +51,7 @@ const Login = ({ setLoginUpdated }) => {
   const HandleLogin = async (data) => {
     try {
       setLoading(true);
-      await fetch("https://xaus-backend-production.up.railway.app/auth/login", {
+      await fetch(import.meta.env.VITE_PUBLIC_BACKEND_URL + "/auth/login", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -165,6 +165,7 @@ const Login = ({ setLoginUpdated }) => {
               >
                 <Typography variant="h4">LOGIN</Typography>
               </LoadingButton>
+              <Link to={"/password-recover-send"}>Esqueci minha senha</Link>
             </Box>
           </form>
         </div>

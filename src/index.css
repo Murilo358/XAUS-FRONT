@@ -13,6 +13,24 @@ body,
   font-family: "Source Sans Pro", sans-serif;
 }
 
+::-webkit-scrollbar {
+  scrollbar-width: thin;
+  width: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #979797; /* cor de fundo da trilha da barra de rolagem */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: transparent; /* cor do botão da barra de rolagem */
+  border-radius: 6px; /* borda arredondada do botão da barra de rolagem */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: transparent; /* cor do botão da barra de rolagem ao passar o mouse */
+}
+
 .app {
   display: flex;
   min-height: 100vh;
@@ -20,17 +38,18 @@ body,
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #e0e0e0;
+  background: transparent;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #5f5e5e;
+  width: 5px;
 }
 .pro-sidebar.collapsed {
   min-height: 100%;
@@ -38,9 +57,49 @@ body,
 .pro-sidebar {
   min-height: 100vh;
 }
+
+html,
+body,
+#root,
+.app::-webkit-scrollbar {
+  overflow-x: hidden;
+}
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+.html,
+body,
+#root,
+.app,
+.content {
+  min-height: auto !important;
+}
+.notifications .container {
+  right: 10px;
+  border: none !important;
+}
+
+.notifications .icon {
+  top: 4px;
+}
+
+.notifications .container .items {
+  /* overflow: hidden; */
+  overflow: scroll !important;
+}
+.card .content {
+  max-width: 400px;
+  max-height: 50px !important;
+}
+
+.card {
+  max-height: 50px !important;
+  border: none !important;
+}
+
+.notifications .icon .count {
+  visibility: hidden;
 }
 
 @media (max-width: 600px) {
