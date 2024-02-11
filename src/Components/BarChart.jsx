@@ -47,13 +47,15 @@ const BarChart = ({ title, data }) => {
           },
         }}
         keys={dataKeys}
-        margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+        margin={{ top: 50, right: 150, bottom: 50, left: 60 }}
         padding={0.3}
         groupMode="grouped"
         indexBy={title}
         valueScale={{ type: "linear" }}
         indexScale={{ type: "band", round: true }}
-        colors={{ scheme: "nivo" }}
+        colors={{
+          scheme: theme.palette.mode == "dark" ? "green_blue" : "blues",
+        }}
         borderColor={{
           from: "color",
           modifiers: [["darker", 1.6]],
