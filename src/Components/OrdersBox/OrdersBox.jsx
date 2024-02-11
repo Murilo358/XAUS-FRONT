@@ -35,7 +35,7 @@ const OrdersBox = ({ orders, fullsize }) => {
                 sx={{
                   width: "80px",
                   height: "25px",
-                  backgroundColor: order.itsPayed ? "GREEN" : "RED",
+                  backgroundColor: order.itsPayed ? "#4AA96C" : "#F55C47",
                 }}
               >
                 <Typography fontWeight="bold">
@@ -49,7 +49,7 @@ const OrdersBox = ({ orders, fullsize }) => {
                   Produtos:
                 </Typography>
                 <Box
-                  className="flex flex-wrap md:flex-nowrap"
+                  classame="flex flex-wrap md:flex-nowrap"
                   sx={{
                     fontSize: "15px",
                     marginTop: "2px",
