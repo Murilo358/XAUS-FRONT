@@ -32,12 +32,7 @@ export const AuthContextProvider = ({ children }) => {
         const res = await response.json();
         setUserName(res.userName);
         setUserId(res.userId);
-
-        setRoles(
-          res.roles.map(function (item) {
-            return item["authority"];
-          })
-        );
+        setRoles(res.roles);
         setAuthenticated(true);
         setJwtToken(cookiesToken);
       }
