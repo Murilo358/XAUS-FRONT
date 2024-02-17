@@ -314,7 +314,7 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
                 fontWeight="bold"
                 sx={{ mb: "5px", mt: "8px" }}
               >
-                Valor total: R${totalPrice}
+                Valor total: R${totalPrice.toFixed(2)}
               </Typography>
             </Box>
           </Box>
