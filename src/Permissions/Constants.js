@@ -8,12 +8,14 @@ const actions = {
   CREATE_CLIENTS: "CREATE_CLIENTS",
   VIEW_ORDERS: "VIEW_ORDERS",
   SET_PACKAGED: "SET_PACKAGED",
+  SET_PAYED: "SET_PAYED",
+  EDIT_USERS: "EDIT_USERS",
 };
 
 const roles = {
-  ADMIN: "ROLE_ADMIN",
-  SALES: "ROLE_SALES",
-  PACKAGER: "ROLE_PACKAGER",
+  ADMIN: "ADMIN",
+  SALES: "SALES",
+  PACKAGER: "PACKAGER",
 };
 
 export { actions, roles };

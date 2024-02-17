@@ -17,7 +17,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import UsePaymentMethods from "../../Hooks/UsePaymentMethods";
 import { formatPaymentMethods } from "../Utils";
 import { useForm } from "react-hook-form";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import AuthContext from "../../Contexts/AuthContext";
 import { hasPermission } from "../../Permissions/Permissions";
 import { useState } from "react";
@@ -80,6 +80,7 @@ const NewOrderModal = ({ openModal, setOpenModal, products }) => {
     await fetch(import.meta.env.VITE_PUBLIC_BACKEND_URL + "/orders/create", {
       method: "POST",
       headers: {
+        "Content-type": "application/json",
         Authorization: `Bearer ${jwtToken}`,
       },
       body: JSON.stringify(formData),

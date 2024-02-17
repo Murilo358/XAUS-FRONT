@@ -86,7 +86,7 @@ body,
 
 .notifications .container .items {
   /* overflow: hidden; */
-  overflow: scroll !important;
+  overflow-x: scroll !important;
 }
 .card .content {
   max-width: 400px;

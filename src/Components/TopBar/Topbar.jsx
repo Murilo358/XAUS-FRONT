@@ -95,7 +95,7 @@ const Topbar = () => {
                 id: order.id,
                 image: import.meta.env.VITE_PUBLIC_XAUS_LOGO,
                 message: formattedOrder,
-                detailPage: "/orders",
+                detailPage: "/orders?orderId=" + order.id,
               },
             ]);
           }
@@ -105,7 +105,7 @@ const Topbar = () => {
               id: order.id,
               image: import.meta.env.VITE_PUBLIC_XAUS_LOGO,
               message: formattedOrder,
-              detailPage: "/orders",
+              detailPage: "/orders?orderId=" + order.id,
             },
           ]);
         }
@@ -185,30 +185,46 @@ const Topbar = () => {
           <Box display="flex">
             {authenticated && roles.includes("ROLE_PACKAGER") && (
               <IconButton>
-                <Notifications
-                  cardOption={(data) => handleClearNotification(data.id)}
-                  headerBackgroundColor={colors.greenAccent[500]}
-                  data={data}
-                  icon={
-                    data.length > 0
-                      ? theme.palette.mode == "dark"
-                        ? "WhiteNewNotification.png"
-                        : "/BlackNewNotification.png"
-                      : theme.palette.mode == "dark"
-                      ? "WhiteNotification.png"
-                      : "/BlackNotification.png"
-                  }
-                  height={300}
-                  width={440}
-                  header={{
-                    title: "Novos pedidos",
-                    option: {
-                      text: "Remover todas notificações",
-                      onClick: () => handleClearNotifications(),
+                <Box
+                  sx={{
+                    display: "flex",
+                    "&  .items": {
+                      backgroundColor: colors.primary[500],
+                    },
+                    "&  .card": {
+                      padding: "0px",
+                      backgroundColor: colors.primary[400],
+                    },
+                    "&  .text": {
+                      color: colors.grey[100],
                     },
                   }}
-                />{" "}
-                {data.length}
+                >
+                  <Notifications
+                    cardOption={(data) => handleClearNotification(data.id)}
+                    headerBackgroundColor={colors.greenAccent[500]}
+                    data={data}
+                    icon={
+                      data.length > 0
+                        ? theme.palette.mode == "dark"
+                          ? "WhiteNewNotification.png"
+                          : "/BlackNewNotification.png"
+                        : theme.palette.mode == "dark"
+                        ? "WhiteNotification.png"
+                        : "/BlackNotification.png"
+                    }
+                    height={300}
+                    width={440}
+                    header={{
+                      title: "Novos pedidos",
+                      option: {
+                        text: "Remover todas notificações",
+                        onClick: () => handleClearNotifications(),
+                      },
+                    }}
+                  />{" "}
+                  {data.length}
+                </Box>
               </IconButton>
             )}
             <IconButton onClick={colorMode.toggleColorMode}>

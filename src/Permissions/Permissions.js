@@ -12,6 +12,8 @@ mappings.set(actions.CREATE_ORDER, [roles.ADMIN, roles.SALES]);
 mappings.set(actions.CREATE_CLIENTS, [roles.ADMIN, roles.SALES]);
 mappings.set(actions.VIEW_ORDERS, [roles.ADMIN, roles.SALES, roles.PACKAGER]);
 mappings.set(actions.SET_PACKAGED, [roles.ADMIN, roles.PACKAGER]);
+mappings.set(actions.SET_PAYED, [roles.ADMIN, roles.SALES]);
+mappings.set(actions.EDIT_USERS, [roles.ADMIN]);
 
 function hasPermission(file, action) {
   if (!file) {

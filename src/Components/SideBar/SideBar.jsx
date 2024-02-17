@@ -11,8 +11,9 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
+import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import { useEffect } from "react";
 import SideBarContext from "../../Contexts/SideBarContext";
 
@@ -152,23 +153,12 @@ const SideBar = () => {
               title="Produtos"
               handleClick={handleClick}
               to="/products"
-              icon={<ShoppingCartOutlinedIcon />}
+              icon={<Inventory2OutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             {/* <Typography variant="h6" color={colors.grey[300]}>
               Usuários
-            </Typography> */}
-            <SideBarItem
-              title="Registrar"
-              handleClick={handleClick}
-              to="/register"
-              icon={<PersonAddOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            {/* <Typography variant="h6" color={colors.grey[300]}>
-              Pedidos
             </Typography> */}
 
             <SideBarItem
@@ -179,6 +169,7 @@ const SideBar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+
             <SideBarItem
               title="Clientes"
               to="/clients"
@@ -187,12 +178,26 @@ const SideBar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            <SideBarItem
+              title="Funcionários"
+              to="/users"
+              handleClick={handleClick}
+              icon={<ManageAccountsOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <SideBarItem
+              title="Novo funcionário"
+              handleClick={handleClick}
+              to="/register"
+              icon={<PersonAddOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            {/* <Typography variant="h6" color={colors.grey[300]}>
+              Pedidos
+            </Typography> */}
           </Box>
-          {/* <MenuItem>Dashboard</MenuItem>
-          <SubMenu title="Components">
-            <MenuItem>Component 1</MenuItem>
-            <MenuItem>Component 2</MenuItem>
-          </SubMenu> */}
         </Menu>
       </ProSidebar>
     </Box>

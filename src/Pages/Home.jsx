@@ -101,10 +101,10 @@ const Home = () => {
         <LiaSpinnerSolid className="animate-spin mt-20  w-[80px] h-[80px]" />
       )}
       {!loading && (
-        <Box className="flex flex-col justify-center items-center">
+        <Box className="flex flex-col justify-center items-center ">
           <Box
             sx={{ backgroundColor: colors.primary[400] }}
-            className="flex p-4  rounded-t-md gap-10 md:w-auto flex-wrap xl:flex-nowrap "
+            className="flex p-4  rounded-t-md gap-10 md:w-auto flex-wrap xl:flex-nowrap   min-w-[69.5vw] w-full lg:max-w-[69vw] "
           >
             <Box className="w-[100%] xl:w-[421px]">
               <StatBox
@@ -139,7 +139,8 @@ const Home = () => {
               />
             </Box>
           </Box>
-          <div className="flex flex-wrap items center justify-center rounded-b-md shadow-lg  min-w-[69.5vw] w-full lg:max-w-[71vw] ">
+
+          <div className="flex flex-wrap items center justify-center rounded-b-md shadow-lg  min-w-[69.5vw] w-full lg:max-w-[69vw] ">
             <Box
               className=" w-full  "
               color={colors.greenAccent[500]}

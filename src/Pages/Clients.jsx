@@ -11,6 +11,7 @@ import InputMask from "react-input-mask";
 import Header from "../Components/Header/Header";
 import LinearProgress from "@mui/material/LinearProgress";
 import { LiaSpinnerSolid } from "react-icons/lia";
+import PtBrLang from "../styles/PtBr";
 import {
   Box,
   Button,
@@ -26,8 +27,6 @@ import {
   GridRowModes,
   GridToolbarContainer,
   GridRowEditStopReasons,
-  GridToolbarDensitySelector,
-  GridToolbarExport,
   useGridApiContext,
 } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
@@ -38,6 +37,7 @@ import { tokens } from "../styles/Themes";
 import OrdersModal from "../Components/OrdersModal/OrdersModal";
 import DataGridBox from "../Components/DataGridBox/DataGridBox";
 import UseIsMobile from "../Hooks/UseIsMobile";
+import MuiToolBar from "../Components/MuiToolbar/MuiToolBar";
 
 const Clients = () => {
   const theme = useTheme();
@@ -175,24 +175,7 @@ const Clients = () => {
             </Button>
           )}
         </Box>
-        <Box>
-          <GridToolbarExport
-            sx={{
-              fontSize: "0.8571428571428571rem",
-              height: "32.578px",
-              color: colors.grey[100],
-            }}
-          />
-        </Box>
-        <Box>
-          <GridToolbarDensitySelector
-            sx={{
-              fontSize: "0.8571428571428571rem",
-              height: "32.578px",
-              color: colors.grey[100],
-            }}
-          />
-        </Box>
+        <MuiToolBar />
       </GridToolbarContainer>
     );
   }
@@ -289,7 +272,7 @@ const Clients = () => {
     }
   };
 
-  const processRowUpdate = async (newRow, oldRow) => {
+  const processRowUpdate = async (newRow) => {
     if (newRow.name === "" || newRow.name === null || newRow.cpf === "") {
       Swal.fire({
         background: colors.primary[400],
@@ -566,15 +549,7 @@ const Clients = () => {
                     sortModel: [{ field: "id", sort: "asc" }],
                   },
                 }}
-                localeText={{
-                  toolbarDensity: "Densidade da tabela",
-                  toolbarExport: "Exportar",
-                  toolbarExportCSV: "Baixar como CSV",
-                  toolbarExportPrint: "Imprimir",
-                  toolbarDensityCompact: "Compacto",
-                  toolbarDensityStandard: "Padrão",
-                  toolbarDensityComfortable: "Confortável",
-                }}
+                localeText={PtBrLang}
                 onRowModesModelChange={handleRowModesModelChange}
                 onRowEditStop={handleRowEditStop}
                 processRowUpdate={processRowUpdate}

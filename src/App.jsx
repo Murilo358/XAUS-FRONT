@@ -14,6 +14,7 @@ import { useState } from "react";
 import Clients from "./Pages/Clients";
 import PasswordRecover from "./Pages/PasswordRecover";
 import PasswordEmailSender from "./Pages/PasswordEmailSender";
+import Users from "./Pages/Users";
 
 function App() {
   const { validateToken, loading, authenticated } = useContext(AuthContext);
@@ -38,6 +39,12 @@ function App() {
           <main className="content">
             <Box
               sx={{
+                "& .MuiDataGrid-row--editing .MuiDataGrid-cell": {
+                  backgroundColor: colors.primary[600] + " !important",
+                },
+                "& .MuiDataGrid-row--editing .MuiDataGrid-cell--editable": {
+                  backgroundColor: colors.primary[500] + " !important",
+                },
                 "& label.Mui-focused": {
                   color: colors.greenAccent[300],
                 },
@@ -94,6 +101,16 @@ function App() {
                   element={
                     authenticated && !loading ? (
                       <Products />
+                    ) : (
+                      !loading && <Navigate to="/Login" />
+                    )
+                  }
+                />
+                <Route
+                  path="/users"
+                  element={
+                    authenticated && !loading ? (
+                      <Users />
                     ) : (
                       !loading && <Navigate to="/Login" />
                     )

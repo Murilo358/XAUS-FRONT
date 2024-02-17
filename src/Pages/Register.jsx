@@ -41,9 +41,11 @@ const Register = () => {
 
   useEffect(() => {
     const getAllRoles = async () => {
-      await fetch(
-        import.meta.env.VITE_PUBLIC_BACKEND_URL + "/users/allRoles"
-      ).then(async (res) => setAllRoles(await res.json()));
+      await fetch(import.meta.env.VITE_PUBLIC_BACKEND_URL + "/users/allRoles", {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      }).then(async (res) => setAllRoles(await res.json()));
     };
     getAllRoles();
   }, []);
@@ -90,7 +92,7 @@ const Register = () => {
           <Header
             className="m-6"
             title="Registrar "
-            subtitle="Registre novos usuários para o XAUS"
+            subtitle="Registre novos funcionários para o XAUS"
           />
           <div className="flex w-3/4 mx-auto mt-12   items-center justify-center">
             <div className="flex  lg:p-7 w-full lg:w-11/12 flex-col lg:flex-row bg-gray-400 rounded-md">
