@@ -1,5 +1,6 @@
 import { createContext, useState, useMemo } from "react";
 import { createTheme } from "@mui/material/styles";
+import { ptBR } from "@mui/material/locale";
 
 export const tokens = (mode) => ({
   ...(mode === "dark"
@@ -189,6 +190,7 @@ export const themeSettings = (mode) => {
         fontSize: 14,
       },
     },
+    ptBR,
   };
 };
 
@@ -209,7 +211,7 @@ export const useMode = () => {
     []
   );
 
-  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+  const theme = useMemo(() => createTheme(themeSettings(mode), ptBR), [mode]);
 
   return [theme, colorMode];
 };
