@@ -25,7 +25,7 @@ const ClientForm = ({ clientId, setClientId }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [radiosDisabled, setRadioDisabled] = useState(false);
-
+  const [clientName, setClientName] = useState("");
   const onClientFormSubmit = async (data) => {
     const newClientId = await fetch(
       import.meta.env.VITE_PUBLIC_BACKEND_URL + "/clients/create",
@@ -41,6 +41,7 @@ const ClientForm = ({ clientId, setClientId }) => {
       if (res.ok) {
         const response = await res.json();
         setRadioDisabled(true);
+        setClientName(response.name);
         return response.id;
       }
       Swal.fire({
@@ -65,9 +66,9 @@ const ClientForm = ({ clientId, setClientId }) => {
   const {
     register,
     handleSubmit,
-
     formState: { errors },
   } = useForm();
+
   const handleChange = (e) => {
     setClientId(1);
     setValue(e.target.value);
@@ -153,9 +154,7 @@ const ClientForm = ({ clientId, setClientId }) => {
               />
             }
             label={
-              radiosDisabled
-                ? "Novo cliente - CRIADO COM SUCESSO!"
-                : "Novo cliente"
+              radiosDisabled ? "Novo cliente - " + clientName : "Novo cliente"
             }
           />
           {!radiosDisabled && (
