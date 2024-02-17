@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useRef, useState } from "react";
 import AuthContext from "../Contexts/AuthContext";
 import { hasPermission } from "../Permissions/Permissions";
 import { actions } from "../Permissions/Constants";
@@ -15,8 +15,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
-import { GridToolbarDensitySelector } from "@mui/x-data-grid";
+import {
+  GridFooterContainer,
+  GridPagination,
+  useGridApiContext,
+} from "@mui/x-data-grid";
 import { tokens } from "../styles/Themes";
+import PtBrLang from "../styles/PtBr";
 import ArticleIcon from "@mui/icons-material/Article";
 import { LiaSpinnerSolid } from "react-icons/lia";
 import {
@@ -25,7 +30,6 @@ import {
   GridRowEditStopReasons,
   GridRowModes,
   GridToolbarContainer,
-  GridToolbarExport,
 } from "@mui/x-data-grid";
 import { useTheme } from "@emotion/react";
 import Swal from "sweetalert2";
@@ -33,8 +37,10 @@ import { toast } from "react-toastify";
 import NewOrderModal from "../Components/NewOrderModal/NewOrderModal";
 import DataGridBox from "../Components/DataGridBox/DataGridBox";
 import UseIsMobile from "../Hooks/UseIsMobile";
+import MuiToolBar from "../Components/MuiToolbar/MuiToolBar";
+import NumberFormat from "react-number-format";
+import CurrencyTextField from "../Components/CurrencyTextField";
 
-//APENAS ADMIN PODERÁ EDITAR, EXCLUIR E ETC
 const Products = () => {
   const { jwtToken, roles } = useContext(AuthContext);
 
@@ -53,6 +59,8 @@ const Products = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [creationMode, setCreationMode] = useState(false);
+
+  const [total, setTotal] = useState(0);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -176,6 +184,18 @@ const Products = () => {
     getAllProducts();
   }, []);
 
+  function CustomFooterTotalComponent(props) {
+    return (
+      <GridFooterContainer>
+        <Box sx={{ padding: "10px", display: "flex" }}>
+          {" "}
+          <Typography variant="h3">Total: R${props.total}</Typography>
+        </Box>
+        <GridPagination />
+      </GridFooterContainer>
+    );
+  }
+
   function EditToolbar(props) {
     // eslint-disable-next-line react/prop-types
     const { setRows, setRowModesModel } = props;
@@ -233,6 +253,7 @@ const Products = () => {
             <Typography> Adicionar produto </Typography>
           </Button>
         </Box>
+
         <Box>
           {createOrderPermission && (
             <Button
@@ -244,24 +265,7 @@ const Products = () => {
             </Button>
           )}
         </Box>
-        <Box>
-          <GridToolbarExport
-            sx={{
-              fontSize: "0.8571428571428571rem",
-              height: "32.578px",
-              color: colors.grey[100],
-            }}
-          />
-        </Box>
-        <Box>
-          <GridToolbarDensitySelector
-            sx={{
-              fontSize: "0.8571428571428571rem",
-              height: "32.578px",
-              color: colors.grey[100],
-            }}
-          />
-        </Box>
+        <MuiToolBar />
       </GridToolbarContainer>
     );
   }
@@ -377,6 +381,37 @@ const Products = () => {
     }
   };
 
+  function CustomEditComponent(props) {
+    // eslint-disable-next-line react/prop-types
+    const { id, value, field } = props;
+    const apiRef = useGridApiContext();
+    const ref = useRef();
+
+    const handleValueChange = (event) => {
+      const newValue = event.target.value;
+      apiRef.current.setEditCellValue({ id, field, value: newValue });
+    };
+
+    return (
+      <TextField
+        variant="outlined"
+        color="primary"
+        value={value}
+        onChange={handleValueChange}
+        InputProps={{
+          inputComponent: CurrencyTextField,
+        }}
+        autoComplete="off"
+        inputRef={ref}
+        {...props}
+      />
+    );
+  }
+
+  const RenderCustomEditComponent = (params) => {
+    return <CustomEditComponent {...params} />;
+  };
+
   const columns = [
     { field: "id", headerName: "ID", flex: isMobile ? 0 : 1 },
     {
@@ -401,7 +436,7 @@ const Products = () => {
       align: "center",
       editable: editPermission,
       type: "number",
-
+      renderEditCell: RenderCustomEditComponent,
       renderCell: ({ row: { price } }) => {
         return (
           <Box>
@@ -446,6 +481,7 @@ const Products = () => {
                 e.target.value >= currentRow.quantity
                   ? (e.target.value = currentRow.quantity)
                   : "";
+                updateTotal(selectedRows);
               }}
               className="p-4"
               defaultValue={1}
@@ -506,6 +542,19 @@ const Products = () => {
     },
   ];
 
+  const updateTotal = (selectedItems) => {
+    selectedItems.forEach((item) => {
+      const buying = document.getElementById(`buying-${item.id}`).value;
+      item.buying = buying;
+    });
+
+    setTotal(
+      selectedItems
+        .reduce((acc, curr) => acc + curr.buying * curr.price, 0)
+        .toFixed(2)
+    );
+  };
+
   return (
     <Box className="flex flex-col justify-center items-center text-center">
       <Header
@@ -532,23 +581,22 @@ const Products = () => {
                   sorting: {
                     sortModel: [{ field: "id", sort: "asc" }],
                   },
+                  filter: {
+                    filterModel: {
+                      items: [
+                        { field: "name", operator: "contains", value: "" },
+                      ],
+                    },
+                  },
                 }}
-                localeText={{
-                  toolbarDensity: "Densidade da tabela",
-                  toolbarExport: "Exportar",
-                  toolbarExportCSV: "Baixar como CSV",
-                  toolbarExportPrint: "Imprimir",
-                  toolbarDensityCompact: "Compacto",
-                  toolbarDensityStandard: "Padrão",
-                  toolbarDensityComfortable: "Confortável",
-                }}
+                localeText={PtBrLang}
                 onRowSelectionModelChange={(newRowSelectionModel) => {
                   setRowSelectionModel(newRowSelectionModel);
                   const selectedRowsData = newRowSelectionModel.map((id) =>
                     rows.find((row) => row.id === id)
                   );
-
                   setSelectedRows(selectedRowsData);
+                  updateTotal(selectedRowsData);
                 }}
                 disableRowSelectionOnClick
                 rowSelectionModel={rowSelectionModel}
@@ -558,11 +606,13 @@ const Products = () => {
                 processRowUpdate={processRowUpdate}
                 rowModesModel={rowModesModel}
                 slotProps={{
+                  footer: { total },
                   toolbar: { setRows, setRowModesModel },
                 }}
                 slots={{
                   toolbar: EditToolbar,
                   loadingOverlay: LinearProgress,
+                  footer: CustomFooterTotalComponent,
                 }}
                 loading={loading}
                 rows={rows}
