@@ -171,7 +171,10 @@ const ProductsModal = ({handleSetPackaged, orderId, openModal,setOpenModal,produ
             </Box>
             {!orderPackaged &&  canSetPackaged && ( 
               <Button
-              onClick={()=> handleSetPackaged(orderId, true)}
+              onClick={async ()=> {
+                  await handleSetPackaged(orderId, true);
+                  window.location.reload(true)
+                }}
               sx={{
                 "&:hover": {
                   color: colors.blueAccent[600],

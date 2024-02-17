@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../Contexts/AuthContext";
 import { hasPermission } from "../Permissions/Permissions";
 import { actions } from "../Permissions/Constants";
@@ -7,13 +7,8 @@ import Header from "../Components/Header/Header";
 import ArticleIcon from "@mui/icons-material/Article";
 import { LiaSpinnerSolid } from "react-icons/lia";
 import LinearProgress from "@mui/material/LinearProgress";
-import {
-  DataGrid,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarExport,
-  useGridApiRef,
-} from "@mui/x-data-grid";
+import { DataGrid, GridToolbarContainer } from "@mui/x-data-grid";
+import PtBrLang from "../styles/PtBr";
 import { Box, Button, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { formatPaymentMethods } from "../Components/Utils";
@@ -24,15 +19,24 @@ import DataGridBox from "../Components/DataGridBox/DataGridBox";
 import { useNavigate } from "react-router-dom";
 import ProductsModal from "../Components/ProductModal/ProductsModal";
 import UseIsMobile from "../Hooks/UseIsMobile";
+import MuiToolBar from "../Components/MuiToolbar/MuiToolBar";
+import { useLocation } from "react-router-dom/dist";
+
+function useQuery() {
+  const { search } = useLocation();
+
+  return React.useMemo(() => new URLSearchParams(search), [search]);
+}
 
 const Orders = () => {
   const { jwtToken, roles } = useContext(AuthContext);
   const permission = hasPermission(roles, actions.VIEW_ORDERS);
   const createOrderPermission = hasPermission(roles, actions.CREATE_ORDER);
+  const setPackagedPermission = hasPermission(roles, actions.SET_PACKAGED);
+  const setPayedPermission = hasPermission(roles, actions.SET_PAYED);
   const [rows, setAllRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalProducts, setModalProducts] = useState([]);
-  const apiRef = useGridApiRef();
   //Used in products modal
   const [totalOrderPrice, setTotalOrderPrice] = useState(0);
   const [orderPackaged, setOrderPackaged] = useState(false);
@@ -40,9 +44,22 @@ const Orders = () => {
 
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const [alreadyClicked, setAlreadyClicked] = useState(false);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  let query = useQuery();
+
+  let urlOrderId = query.get("orderId");
+
+  if (urlOrderId !== null) {
+    let orderButton = document.getElementById(`see-orders-${urlOrderId}`);
+    if (orderButton !== null && !alreadyClicked) {
+      orderButton.click();
+      setAlreadyClicked(true);
+    }
+  }
 
   function EditToolbar() {
     const handleRedirectClick = () => {
@@ -55,24 +72,6 @@ const Orders = () => {
     return (
       <GridToolbarContainer>
         <Box>
-          <GridToolbarExport
-            sx={{
-              fontSize: "0.8571428571428571rem",
-              height: "32.578px",
-              color: colors.grey[100],
-            }}
-          />
-        </Box>
-        <Box>
-          <GridToolbarDensitySelector
-            sx={{
-              fontSize: "0.8571428571428571rem",
-              height: "32.578px",
-              color: colors.grey[100],
-            }}
-          />
-        </Box>
-        <Box>
           {createOrderPermission && (
             <Button
               sx={{ color: colors.grey[100] }}
@@ -83,6 +82,7 @@ const Orders = () => {
             </Button>
           )}
         </Box>
+        <MuiToolBar />
       </GridToolbarContainer>
     );
   }
@@ -155,11 +155,11 @@ const Orders = () => {
     }
   };
   const handleRowUpdate = (orderId, packaged) => {
-    setAllRows((prevRows) => {
-      return prevRows.map((row) => {
-        row.id === orderId ? { ...row, packaged: packaged } : row;
-      });
-    });
+    setAllRows(
+      rows.map((row) =>
+        row.id == orderId ? { ...row, packaged: packaged } : row
+      )
+    );
   };
 
   const { isMobile } = UseIsMobile();
@@ -256,16 +256,16 @@ const Orders = () => {
       headerName: "Pago",
       headerAlign: "center",
       type: "boolean",
-      editable: true,
+      editable: setPayedPermission,
       flex: isMobile ? 0 : 1,
       align: "center",
     },
     {
       field: "itsPackaged",
+      editable: setPackagedPermission,
       headerName: "Empacotado",
       headerAlign: "center",
       type: "boolean",
-      editable: true,
       flex: isMobile ? 0 : 1,
       align: "center",
     },
@@ -284,7 +284,8 @@ const Orders = () => {
                 backgroundColor: colors.greenAccent[500],
               }}
               type="submit"
-              className="p-4  "
+              id={`see-orders-${id}`}
+              className="p-4"
               onClick={() => {
                 setOrderId(id);
                 setOrderPackaged(itsPackaged);
@@ -345,7 +346,6 @@ const Orders = () => {
     getAllOrders();
   }, []);
 
-  console.log(rows);
   return (
     <Box
       className="flex flex-col justify-center items-center text-center"
@@ -377,15 +377,7 @@ const Orders = () => {
                     sortModel: [{ field: "id", sort: "desc" }],
                   },
                 }}
-                localeText={{
-                  toolbarDensity: "Densidade da tabela",
-                  toolbarExport: "Exportar",
-                  toolbarExportCSV: "Baixar como CSV",
-                  toolbarExportPrint: "Imprimir",
-                  toolbarDensityCompact: "Compacto",
-                  toolbarDensityStandard: "Padrão",
-                  toolbarDensityComfortable: "Confortável",
-                }}
+                localeText={PtBrLang}
                 slots={{
                   toolbar: EditToolbar,
                   loadingOverlay: LinearProgress,
