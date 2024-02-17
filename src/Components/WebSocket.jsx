@@ -11,13 +11,14 @@ const UseWebSocketComponent = () => {
   const saveOrderToCookies = async (json) => {
     try {
       const parsedJson = JSON.parse(json);
+
       const stringfiedProducts = JSON.stringify(parsedJson.products);
-      let generatedId = Math.random() * 1000;
-      const cookieName = `order_${generatedId}`;
+      let orderId = parsedJson.id;
+      const cookieName = `order_${orderId}`;
       await cookies.set(cookieName, stringfiedProducts, {
         expires: new Date(Date.now() + 86400e3),
       });
-      return generatedId;
+      return orderId;
     } catch (err) {
       console.error("Erro while saving order into cookies", err.message);
     }
@@ -59,10 +60,9 @@ const UseWebSocketComponent = () => {
         console.log("connected" + frame);
 
         stompClient.subscribe("/user/topich/notify", async (message) => {
-          let generatedId = await saveOrderToCookies(message.body);
+          let orderId = await saveOrderToCookies(message.body);
           let returnedOrder = JSON.parse(message.body).products;
-          returnedOrder["id"] = generatedId;
-          console.log(messages.length);
+          returnedOrder["id"] = orderId;
           if (messages.length > 0) {
             setMessages((current) => [...current, returnedOrder]);
           } else {
