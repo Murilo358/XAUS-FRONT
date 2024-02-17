@@ -303,7 +303,8 @@ const Users = () => {
     {
       field: "enabled",
       type: "boolean",
-      headerName: "Habilitado",
+      headerName: "Ativo",
+      editable: editPermission,
       flex: isMobile ? 0 : 1,
     },
     {
