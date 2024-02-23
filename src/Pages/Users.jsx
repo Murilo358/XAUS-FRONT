@@ -32,12 +32,13 @@ import dayjs from "dayjs";
 import { LiaSpinnerSolid } from "react-icons/lia";
 import translateRoles from "../Permissions/TranslateRoles";
 import InputMask from "react-input-mask";
+import HandlePermissionError from "../Components/HandlePermissionError";
 
 const Users = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
   const [loading, setLoading] = useState(false);
-  const { jwtToken, roles } = useContext(AuthContext);
+  const { jwtToken, roles, id, userId } = useContext(AuthContext);
   const editPermission = hasPermission(roles, actions.EDIT_USERS);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -66,6 +67,42 @@ const Users = () => {
     setCreationMode(false);
   };
 
+  const handleDeleteUser = async (userId) => {
+    if (userId === id) {
+      toast.error(`Você não pode deletear você mesmo!`, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
+    try {
+      setLoading(true);
+      const response = await fetch(
+        import.meta.env.VITE_PUBLIC_BACKEND_URL + `/users/delete/${userId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+      setLoading(false);
+      if (response.ok) {
+        return response;
+      } else {
+        throw new Error("Erro ao deletar o usuário");
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        background: colors.primary[400],
+        color: colors.grey[100],
+        title: "Oops...",
+        text: error.message,
+      });
+      setLoading(false);
+      return null;
+    }
+  };
+
   const handleDeleteClick = async (id) => {
     if (!editPermission) {
       Swal.fire({
@@ -77,10 +114,6 @@ const Users = () => {
       });
       return;
     }
-
-    const handleDeleteUser = (id) => {
-      console.log(id);
-    };
 
     const res = await handleDeleteUser(id);
     if (res.ok) {
@@ -374,7 +407,7 @@ const Users = () => {
         if (response.status === 200) {
           setAllUsers(await response.json());
         } else {
-          console.log("erro ao pegar os usuários");
+          console.log("erro ao pegar os usuários"); // todo catch correctly
         }
       });
     };
@@ -397,27 +430,33 @@ const Users = () => {
         title="Funcionários"
         subtitle="Veja todos seus funcionários registrados no XAUS"
       />
-      {loading && (
-        <LiaSpinnerSolid className="animate-spin mt-20  w-[80px] h-[80px]" />
-      )}
-      {!loading && (
-        <DataGridBox>
-          <DataGrid
-            processRowUpdate={processRowUpdate}
-            className="w-11/12 "
-            editMode="row"
-            onRowEditStop={handleRowEditStop}
-            rowModesModel={rowModesModel}
-            initialState={{
-              sorting: {
-                sortModel: [{ field: "id", sort: "desc" }],
-              },
-            }}
-            localeText={PtBrLang}
-            rows={allUsers}
-            columns={columns}
-          />
-        </DataGridBox>
+      {editPermission ? (
+        <>
+          {loading && (
+            <LiaSpinnerSolid className="animate-spin mt-20  w-[80px] h-[80px]" />
+          )}
+          {!loading && (
+            <DataGridBox>
+              <DataGrid
+                processRowUpdate={processRowUpdate}
+                className="w-11/12 "
+                editMode="row"
+                onRowEditStop={handleRowEditStop}
+                rowModesModel={rowModesModel}
+                initialState={{
+                  sorting: {
+                    sortModel: [{ field: "id", sort: "desc" }],
+                  },
+                }}
+                localeText={PtBrLang}
+                rows={allUsers}
+                columns={columns}
+              />
+            </DataGridBox>
+          )}
+        </>
+      ) : (
+        <HandlePermissionError />
       )}
     </Box>
   );

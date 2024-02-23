@@ -21,6 +21,7 @@ import ProductsModal from "../Components/ProductModal/ProductsModal";
 import UseIsMobile from "../Hooks/UseIsMobile";
 import MuiToolBar from "../Components/MuiToolbar/MuiToolBar";
 import { useLocation } from "react-router-dom/dist";
+import HandlePermissionError from "../Components/HandlePermissionError";
 
 function useQuery() {
   const { search } = useLocation();
@@ -391,7 +392,7 @@ const Orders = () => {
           )}
         </>
       ) : (
-        <p>Você não tem permissão para visualizar essa página </p>
+        <HandlePermissionError />
       )}
     </Box>
   );

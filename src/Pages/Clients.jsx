@@ -38,12 +38,13 @@ import OrdersModal from "../Components/OrdersModal/OrdersModal";
 import DataGridBox from "../Components/DataGridBox/DataGridBox";
 import UseIsMobile from "../Hooks/UseIsMobile";
 import MuiToolBar from "../Components/MuiToolbar/MuiToolBar";
+import HandlePermissionError from "../Components/HandlePermissionError";
 
 const Clients = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const { jwtToken, roles } = useContext(AuthContext);
-  const permissions = hasPermission(roles, actions.SEE_ALL_PRODUCTS);
+  const permissions = hasPermission(roles, actions.VIEW_CLIENTS);
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
   const [openModal, setOpenModal] = useState(false);
@@ -569,7 +570,7 @@ const Clients = () => {
           )}
         </>
       ) : (
-        <p>Você não tem permissão :( </p>
+        <HandlePermissionError />
       )}
     </div>
   );

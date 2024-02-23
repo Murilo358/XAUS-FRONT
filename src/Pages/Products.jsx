@@ -38,8 +38,8 @@ import NewOrderModal from "../Components/NewOrderModal/NewOrderModal";
 import DataGridBox from "../Components/DataGridBox/DataGridBox";
 import UseIsMobile from "../Hooks/UseIsMobile";
 import MuiToolBar from "../Components/MuiToolbar/MuiToolBar";
-import NumberFormat from "react-number-format";
 import CurrencyTextField from "../Components/CurrencyTextField";
+import HandlePermissionError from "../Components/HandlePermissionError";
 
 const Products = () => {
   const { jwtToken, roles } = useContext(AuthContext);
@@ -176,7 +176,17 @@ const Products = () => {
           headers: { Authorization: `Bearer ${jwtToken}` },
         }
       ).then(async (res) => {
-        setRows(await res.json());
+        if (res.ok) {
+          setRows(await res.json());
+        } else {
+          Swal.fire({
+            background: colors.primary[400],
+            color: colors.grey[100],
+            icon: "error",
+            title: "Oops...",
+            text: "Erro ao buscar todos os produtos",
+          });
+        }
       });
       setLoading(false);
     };
@@ -185,6 +195,10 @@ const Products = () => {
   }, []);
 
   function CustomFooterTotalComponent(props) {
+    CustomFooterTotalComponent.propTypes = {
+      total: CustomFooterTotalComponent.number.isRequired,
+    };
+
     return (
       <GridFooterContainer>
         <Box sx={{ padding: "10px", display: "flex" }}>
@@ -382,7 +396,12 @@ const Products = () => {
   };
 
   function CustomEditComponent(props) {
-    // eslint-disable-next-line react/prop-types
+    CustomEditComponent.propTypes = {
+      id: CustomFooterTotalComponent.number.isRequired,
+      value: CustomFooterTotalComponent.string.isRequired,
+      field: CustomFooterTotalComponent.string.isRequired,
+    };
+
     const { id, value, field } = props;
     const apiRef = useGridApiContext();
     const ref = useRef();
@@ -503,15 +522,15 @@ const Products = () => {
 
         if (isInEditMode) {
           return [
-            // eslint-disable-next-line react/jsx-key
             <GridActionsCellItem
+              key={"grid-actions-save-item"}
               icon={<SaveIcon />}
               label="Save"
               color="inherit"
               onClick={handleSaveClick(id)}
             />,
-            // eslint-disable-next-line react/jsx-key
             <GridActionsCellItem
+              key={"grid-actions-cancel-item"}
               icon={<CancelIcon />}
               label="Cancel"
               className="textPrimary"
@@ -622,8 +641,7 @@ const Products = () => {
           )}
         </>
       ) : (
-        //TODO: PUT THIS ON THE CENTER OF THE PAGE
-        <p>Você não tem permissão para acessar essa página :( </p>
+        <HandlePermissionError />
       )}
     </Box>
   );

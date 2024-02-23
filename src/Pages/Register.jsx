@@ -24,6 +24,7 @@ import Header from "../Components/Header/Header";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../styles/Themes";
 import translateRoles from "../Permissions/TranslateRoles";
+import HandlePermissionError from "../Components/HandlePermissionError";
 
 const Register = () => {
   const { jwtToken, roles } = useContext(AuthContext);
@@ -75,7 +76,7 @@ const Register = () => {
         toast.success("Usuário criado com sucesso!", {
           position: toast.POSITION.TOP_RIGHT,
         });
-        return navigate("/Login");
+        return navigate("/Users");
       } else if (res.status == 400) {
         const response = await res.json();
         toast.error(response.message, {
@@ -239,7 +240,7 @@ const Register = () => {
           </div>
         </div>
       ) : (
-        <p>Você não tem permissão :(</p>
+        <HandlePermissionError />
       )}
     </>
   );

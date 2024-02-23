@@ -16,6 +16,8 @@ import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlin
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import { useEffect } from "react";
 import SideBarContext from "../../Contexts/SideBarContext";
+import { hasPermission } from "../../Permissions/Permissions";
+import { actions } from "../../Permissions/Constants";
 
 const SideBar = () => {
   const theme = useTheme();
@@ -25,6 +27,14 @@ const SideBar = () => {
   const { isCollapsed, setIsCollapsed } = useContext(SideBarContext);
   const { userName, roles } = useContext(AuthContext);
   const [width, setWidth] = useState(window.innerWidth);
+
+  // pages permissions
+
+  const seeClients = hasPermission(roles, actions.VIEW_CLIENTS);
+  const seeOrders = hasPermission(roles, actions.VIEW_ORDERS);
+  const seeProducts = hasPermission(roles, actions.SEE_ALL_PRODUCTS);
+  const seeRegister = hasPermission(roles, actions.CREATE_USER);
+  const seeUsers = hasPermission(roles, actions.EDIT_USERS);
 
   function getSize() {
     setWidth(window.innerWidth);
@@ -149,51 +159,62 @@ const SideBar = () => {
             {/* <Typography variant="h6" color={colors.grey[300]}>
               Produtos
             </Typography> */}
-            <SideBarItem
-              title="Produtos"
-              handleClick={handleClick}
-              to="/products"
-              icon={<Inventory2OutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            {seeProducts && (
+              <SideBarItem
+                title="Produtos"
+                handleClick={handleClick}
+                to="/products"
+                icon={<Inventory2OutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
             {/* <Typography variant="h6" color={colors.grey[300]}>
               Usuários
             </Typography> */}
+            {seeOrders && (
+              <SideBarItem
+                title="Pedidos"
+                to="/orders"
+                handleClick={handleClick}
+                icon={<PointOfSaleOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
 
-            <SideBarItem
-              title="Pedidos"
-              to="/orders"
-              handleClick={handleClick}
-              icon={<PointOfSaleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            {seeClients && (
+              <SideBarItem
+                title="Clientes"
+                to="/clients"
+                handleClick={handleClick}
+                icon={<PeopleOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
+            {seeUsers && (
+              <SideBarItem
+                title="Funcionários"
+                to="/users"
+                handleClick={handleClick}
+                icon={<ManageAccountsOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
 
-            <SideBarItem
-              title="Clientes"
-              to="/clients"
-              handleClick={handleClick}
-              icon={<PeopleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <SideBarItem
-              title="Funcionários"
-              to="/users"
-              handleClick={handleClick}
-              icon={<ManageAccountsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <SideBarItem
-              title="Novo funcionário"
-              handleClick={handleClick}
-              to="/register"
-              icon={<PersonAddOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            {seeRegister && (
+              <SideBarItem
+                title="Novo funcionário"
+                handleClick={handleClick}
+                to="/register"
+                icon={<PersonAddOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
+
             {/* <Typography variant="h6" color={colors.grey[300]}>
               Pedidos
             </Typography> */}
