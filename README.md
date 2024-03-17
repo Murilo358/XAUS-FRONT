@@ -1,7 +1,7 @@
 <img src="./public/xaus-logo.png" alt="Logo XAUS" width="115" height="115">
 <hr>
 <p align="center">
-   <img src="http://img.shields.io/static/v1?label=STATUS&message=EM PROGRESSO&color=orange&style=for-the-badge" #vitrine/>
+   <img src="http://img.shields.io/static/v1?label=STATUS&message=FINALIZADO&color=green&style=for-the-badge" #vitrine/>
 </p>
 <hr>
 
