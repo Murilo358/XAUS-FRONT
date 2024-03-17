@@ -71,6 +71,7 @@
 ![POSTGRESQL](https://img.shields.io/badge/-postgresql-0D1117?style=for-the-badge&logo=postgresql&labelColor=0D1117&logoColor=dbdbda)&nbsp;
 ![SUPABASE](https://img.shields.io/badge/-supabase-0D1117?style=for-the-badge&logo=supabase&logoColor=dbdbda&labelColor=0D1117)&nbsp;
 ![REDIS](https://img.shields.io/badge/-Redis-0D1117?style=for-the-badge&logo=redis&logoColor=dbdbda&labelColor=0D1117)&nbsp;
+![AWS](https://img.shields.io/badge/-aws-0D1117?style=for-the-badge&logo=amazon-aws&labelColor=0D1117&logoColor=dbdbda)&nbsp;
 
 ## Desenvolvedor
 
