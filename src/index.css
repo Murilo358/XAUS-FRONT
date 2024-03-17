@@ -102,6 +102,16 @@ body,
   visibility: hidden;
 }
 
+.dark-toastify-background {
+  margin-top: 50px;
+  background-color: #535ac8 !important;
+}
+
+.light-toastify-background {
+  margin-top: 50px;
+  background-color: #868dfb !important;
+}
+
 @media (max-width: 600px) {
   .pro-sidebar.collapsed {
     /*  position: relative; */

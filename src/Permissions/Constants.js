@@ -11,6 +11,7 @@ const actions = {
   SET_PACKAGED: "SET_PACKAGED",
   SET_PAYED: "SET_PAYED",
   EDIT_USERS: "EDIT_USERS",
+  VIEW_NOTIFICATIONS: "VIEW_NOTIFICATIONS",
 };
 
 const roles = {

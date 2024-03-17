@@ -47,7 +47,7 @@ const BarChart = ({ title, data }) => {
           },
         }}
         keys={dataKeys}
-        margin={{ top: 50, right: 150, bottom: 50, left: 60 }}
+        margin={{ top: 50, right: 200, bottom: 50, left: 60 }}
         padding={0.3}
         groupMode="grouped"
         indexBy={title}
@@ -82,8 +82,8 @@ const BarChart = ({ title, data }) => {
             dataFrom: "keys",
             anchor: "bottom-right",
             direction: "column",
+            translateX: 83,
             justify: false,
-            translateX: 120,
             translateY: 0,
             itemsSpacing: 2,
             itemWidth: 100,

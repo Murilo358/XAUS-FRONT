@@ -21,6 +21,8 @@ import UseWebSocketComponent from "../WebSocket";
 import SideBarContext from "../../Contexts/SideBarContext";
 import Notifications from "react-notifications-menu";
 import Cookies from "universal-cookie";
+import { hasPermission } from "../../Permissions/Permissions";
+import { actions } from "../../Permissions/Constants";
 
 const Topbar = () => {
   const theme = useTheme();
@@ -30,6 +32,7 @@ const Topbar = () => {
   const { isCollapsed, setIsCollapsed } = useContext(SideBarContext);
   const { messages, setMessages } = UseWebSocketComponent();
   const [openedMenu, setOpenedMenu] = useState(false);
+  const viewNotifications = hasPermission(roles, actions.VIEW_NOTIFICATIONS);
   const cookies = new Cookies();
   const [data, setData] = useState([]);
 
@@ -183,7 +186,7 @@ const Topbar = () => {
             )}
           </Box>
           <Box display="flex">
-            {authenticated && roles.includes("ROLE_PACKAGER") && (
+            {authenticated && viewNotifications && (
               <IconButton>
                 <Box
                   sx={{

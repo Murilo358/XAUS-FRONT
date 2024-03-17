@@ -93,7 +93,7 @@ const ProductsModal = ({handleSetPackaged, orderId, openModal,setOpenModal,produ
         } else {
           return (
             <Box>
-              <Typography variant="p">R$ {totalProductPrice}</Typography>
+              <Typography variant="p">R$ {totalProductPrice.toFixed(2)}</Typography>
             </Box>
           );
         }
@@ -101,8 +101,6 @@ const ProductsModal = ({handleSetPackaged, orderId, openModal,setOpenModal,produ
     },
   ];
 
- 
-  console.log(typeof products);
   return (
     <Modal
       open={openModal}
@@ -166,7 +164,7 @@ const ProductsModal = ({handleSetPackaged, orderId, openModal,setOpenModal,produ
                 fontWeight="bold"
                 sx={{ mb: "5px", mt: "8px" }}
               >
-                Valor total: R${totalOrderPrice}
+                Valor total: R${totalOrderPrice.toFixed(2)}
               </Typography>
             </Box>
             {!orderPackaged &&  canSetPackaged && ( 

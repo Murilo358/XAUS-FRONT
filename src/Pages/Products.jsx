@@ -1,4 +1,4 @@
-import { useContext, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import AuthContext from "../Contexts/AuthContext";
 import { hasPermission } from "../Permissions/Permissions";
 import { actions } from "../Permissions/Constants";
@@ -61,6 +61,8 @@ const Products = () => {
   const [creationMode, setCreationMode] = useState(false);
 
   const [total, setTotal] = useState(0);
+
+  const toastId = useRef(null);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -196,7 +198,7 @@ const Products = () => {
 
   function CustomFooterTotalComponent(props) {
     CustomFooterTotalComponent.propTypes = {
-      total: CustomFooterTotalComponent.number.isRequired,
+      total: CustomFooterTotalComponent.number,
     };
 
     return (
@@ -397,9 +399,9 @@ const Products = () => {
 
   function CustomEditComponent(props) {
     CustomEditComponent.propTypes = {
-      id: CustomFooterTotalComponent.number.isRequired,
-      value: CustomFooterTotalComponent.string.isRequired,
-      field: CustomFooterTotalComponent.string.isRequired,
+      id: CustomFooterTotalComponent.number,
+      value: CustomFooterTotalComponent.string,
+      field: CustomFooterTotalComponent.string,
     };
 
     const { id, value, field } = props;
@@ -560,6 +562,47 @@ const Products = () => {
       },
     },
   ];
+
+  useEffect(() => {
+    const handlePageChange = () => {
+      toast.dismiss();
+    };
+
+    return () => {
+      handlePageChange();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (total > 0) {
+      if (toastId.current !== null) {
+        toast.update(toastId.current, {
+          render: `🪙 Total: R$${total}`,
+        });
+      } else {
+        toastId.current = toast(`🪙 Total: ${total}`, {
+          position: "top-right",
+          autoClose: false,
+          closeButton: false,
+          hideProgressBar: true,
+          className:
+            theme.palette.mode == "dark"
+              ? "dark-toastify-background"
+              : "light-toastify-background",
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+    } else {
+      if (toastId.current !== null) {
+        toast.dismiss(toastId.current);
+        toastId.current = null;
+      }
+    }
+  }, [total, theme.palette.mode]);
 
   const updateTotal = (selectedItems) => {
     selectedItems.forEach((item) => {

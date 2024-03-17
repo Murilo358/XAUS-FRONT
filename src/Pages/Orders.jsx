@@ -318,7 +318,7 @@ const Orders = () => {
       align: "left",
       type: "number",
       renderCell: ({ row: { orderPrice } }) => {
-        return <Typography variant="p">R$ {orderPrice}</Typography>;
+        return <Typography variant="p">R$ {orderPrice.toFixed(2)}</Typography>;
       },
     },
   ];
@@ -375,7 +375,7 @@ const Orders = () => {
                 editMode="row"
                 initialState={{
                   sorting: {
-                    sortModel: [{ field: "id", sort: "desc" }],
+                    sortModel: [{ field: "createdAt", sort: "desc" }],
                   },
                 }}
                 localeText={PtBrLang}

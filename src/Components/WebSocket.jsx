@@ -2,11 +2,14 @@ import { useEffect, useContext, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import AuthContext from "../Contexts/AuthContext";
 import Cookies from "universal-cookie";
+import { hasPermission } from "../Permissions/Permissions";
+import { actions } from "../Permissions/Constants";
 
 const UseWebSocketComponent = () => {
   const { jwtToken, authenticated, roles } = useContext(AuthContext);
   const [messages, setMessages] = useState([]);
   const cookies = new Cookies();
+  const viewNotifications = hasPermission(roles, actions.VIEW_NOTIFICATIONS);
 
   const saveOrderToCookies = async (json) => {
     try {
@@ -43,9 +46,10 @@ const UseWebSocketComponent = () => {
     let stompClient;
 
     getAllOrdersFromCookies();
-    if (authenticated && roles.includes("ROLE_PACKAGER")) {
+    if (authenticated && viewNotifications) {
+      console.log(jwtToken);
       stompClient = new Client({
-        brokerURL: "ws://localhost:8080/ws-endpoint",
+        brokerURL: import.meta.env.VITE_PUBLIC_WEBSOCKET_URL,
       });
 
       const headers = {
