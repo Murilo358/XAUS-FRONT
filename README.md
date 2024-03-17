@@ -19,7 +19,7 @@
 ## Descrição do projeto 
 
 <p align="justify">
- O XAUS forcece um painel intuitivo baseado em admin panel para gerenciar todos os aspectos cruciais de um negócio, desde a criação de pedidos até a administração de usuários e permissões. 
+ O XAUS fornece um painel intuitivo baseado em admin panel para gerenciar todos os aspectos cruciais de um negócio, desde a criação de pedidos até a administração de usuários e permissões. 
   Ele é construído com foco na segurança, escalabilidade e facilidade de manutenção.
 </p>
 
