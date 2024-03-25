@@ -43,6 +43,8 @@
 
 :white_check_mark: `Funcionalidade 9:` Implementação de cache compartilhado permitindo escalabilidade entre multiplas instâncias (Docker e Redis)  
 
+:white_check_mark: `Funcionalidade 10:` Implementação do Swagger para melhor visibilidade dos endpoints
+
 
 ## Ferramentas-utilizadas
 
